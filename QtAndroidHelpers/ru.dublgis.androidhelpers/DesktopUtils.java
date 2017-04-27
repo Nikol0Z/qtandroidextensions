@@ -59,6 +59,7 @@ import android.support.annotation.NonNull;
 //import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.provider.Settings.Secure;
+import android.net.wifi.WifiManager;
 
 
 public class DesktopUtils
@@ -485,6 +486,24 @@ public class DesktopUtils
         catch (Exception e)
         {
             Log.e(TAG, "getTelephonyDeviceId exception: "+e);
+            return "";
+        }
+    }
+
+    public static String  getWifiMacAddress(final Context ctx)
+    {
+        try
+        {
+            WifiManager wifiManager = (WifiManager)ctx.getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager == null)
+            {
+                return "";
+            }
+            return wifiManager.getConnectionInfo().getMacAddress();
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "getWifiMacAddress exception: "+e);
             return "";
         }
     }

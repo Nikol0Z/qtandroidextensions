@@ -38,6 +38,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QObject>
+#include <QCryptographicHash>
 
 namespace QAndroidDesktopUtils {
 

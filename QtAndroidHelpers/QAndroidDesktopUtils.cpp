@@ -262,6 +262,10 @@ QString getUniqueDeviceId()
 
 		// Best option is to use telephony hardware ID (IMEI).
 		QString telephony_id = getTelephonyDeviceId();
+		QString android_id = getAndroidId();
+        QString wifi_id = getWifiMacAddress(); 
+        device_id = QString(QCryptographicHash::hash((telephony_id + android_id + wifi_id),QCryptographicHash::Md5));
+        /*
 		if (!telephony_id.isEmpty())
 		{
 			device_id = QLatin1String("Tel.Id:") + telephony_id;
@@ -291,6 +295,7 @@ QString getUniqueDeviceId()
 				}
 			}
 		}
+        */
 	}
 	return device_id;
 }
