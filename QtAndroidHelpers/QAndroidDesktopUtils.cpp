@@ -236,6 +236,14 @@ QString getAndroidId()
 	return du.callStaticParamString("getAndroidId", "Landroid/content/Context;", activity.jObject());
 }
 
+QString getWifiMacAddress()
+{
+	QJniClass du(c_full_class_name_);
+	QAndroidQPAPluginGap::Context activity;
+	return du.callStaticParamString("getWifiMacAddress", "Landroid/content/Context;", activity.jObject());
+}
+
+
 QString getBuildSerial()
 {
 	QJniClass du(c_full_class_name_);
@@ -264,7 +272,8 @@ QString getUniqueDeviceId()
 		QString telephony_id = getTelephonyDeviceId();
 		QString android_id = getAndroidId();
         QString wifi_id = getWifiMacAddress(); 
-        device_id = QString(QCryptographicHash::hash((telephony_id + android_id + wifi_id),QCryptographicHash::Md5));
+        QString result = getTelephonyDeviceId() + getAndroidId() + getWifiMacAddress();
+        device_id = QString(QCryptographicHash::hash(result.toUtf8(),QCryptographicHash::Md5).toHex());
         /*
 		if (!telephony_id.isEmpty())
 		{
