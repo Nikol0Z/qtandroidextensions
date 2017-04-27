@@ -54,7 +54,7 @@ import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.graphics.Canvas;
 
-import ru.dublgis.androidhelpers.Log;
+//import ru.dublgis.androidhelpers.Log;
 
 
 class OffscreenWebView extends OffscreenView
@@ -120,18 +120,18 @@ class OffscreenWebView extends OffscreenView
                         {
                             if(!v.hasFocus())
                             {
-                                Log.i(TAG, "MyWebView.MyOnTouchListener [" + event.getAction() + "]: requesting focus.");
+                                //Log.i(TAG, "MyWebView.MyOnTouchListener [" + event.getAction() + "]: requesting focus.");
                                 // v.requestFocusFromTouch();
                                 v.requestFocus();
                             }
                             else
                             {
-                                Log.i(TAG, "MyWebView.MyOnTouchListener [" + event.getAction() + "]: already has focus.");
+                               // Log.i(TAG, "MyWebView.MyOnTouchListener [" + event.getAction() + "]: already has focus.");
                             }
                         }
                         else
                         {
-                            Log.i(TAG, "MyWebView.MyOnTouchListener[" + event.getAction() + "]: not focusable item.");
+                           // Log.i(TAG, "MyWebView.MyOnTouchListener[" + event.getAction() + "]: not focusable item.");
                         }
                         break;
                 }
@@ -142,7 +142,7 @@ class OffscreenWebView extends OffscreenView
         public MyWebView(Context context)
         {
             super(context);
-            Log.i(TAG, "MyWebView constructor");
+           // Log.i(TAG, "MyWebView constructor");
             setWebViewClient(new MyWebViewClient());
             setWebChromeClient(new MyWebChromeClient());
             setOnTouchListener(new MyOnTouchListener());
@@ -174,7 +174,7 @@ class OffscreenWebView extends OffscreenView
 
         public void setOffscreenViewVisible(boolean visible)
         {
-            Log.i(TAG, "MyWebView.setOffscreenViewVisible "+visible);
+           // Log.i(TAG, "MyWebView.setOffscreenViewVisible "+visible);
             if (visible)
             {
                 setVisibility(View.VISIBLE);
@@ -202,7 +202,7 @@ class OffscreenWebView extends OffscreenView
         @Override
         public void invalidate(Rect dirty)
         {
-            Log.i(TAG, "MyWebView.invalidate(Rect dirty)");
+           // Log.i(TAG, "MyWebView.invalidate(Rect dirty)");
             super.invalidate(dirty);
             invalidateOffscreenView();
         }
@@ -312,12 +312,12 @@ class OffscreenWebView extends OffscreenView
     // From C++
     public void loadUrl(final String url)
     {
-        Log.i(TAG, "loadUrl: scheduling");
+    //    Log.i(TAG, "loadUrl: scheduling");
         runViewAction(new Runnable() {
             @Override
             public void run()
             {
-                Log.i(TAG, "loadUrl: RUN");
+                //Log.i(TAG, "loadUrl: RUN");
                 ((MyWebView)getView()).loadUrl(url);
             }
         });
@@ -334,12 +334,12 @@ class OffscreenWebView extends OffscreenView
      */
     public void loadUrl(final String url, final String additionalHttpHeaders)
     {
-        Log.i(TAG, "loadUrl: scheduling");
+     //   Log.i(TAG, "loadUrl: scheduling");
         runViewAction(new Runnable() {
             @Override
             public void run()
             {
-                Log.i(TAG, "loadUrl: RUN");
+                //Log.i(TAG, "loadUrl: RUN");
                 Map<String, String> ma = new HashMap<String, String>();
                 String[] parts = additionalHttpHeaders.split("\n");
                 for (int i = 0, h = 0, v = 1; i < parts.length / 2; i++, h += 2, v += 2)
@@ -354,12 +354,12 @@ class OffscreenWebView extends OffscreenView
     // From C++
     public void loadData(final String text, final String mime, final String encoding)
     {
-        Log.i(TAG, "loadData: scheduling");
+       // Log.i(TAG, "loadData: scheduling");
         runViewAction(new Runnable(){
             @Override
             public void run()
             {
-                Log.i(TAG, "loadData: RUN");
+               // Log.i(TAG, "loadData: RUN");
                 ((MyWebView)getView()).loadData(text, mime, encoding);
             }
         });
@@ -368,12 +368,12 @@ class OffscreenWebView extends OffscreenView
     // From C++
     public void loadDataWithBaseURL(final String baseUrl, final String data, final String mimeType, final String encoding, final String historyUrl)
     {
-        Log.i(TAG, "loadDataWithBaseURL: scheduling");
+       // Log.i(TAG, "loadDataWithBaseURL: scheduling");
         runViewAction(new Runnable() {
             @Override
             public void run()
             {
-                Log.i(TAG, "loadDataWithBaseURL: RUN");
+                //Log.i(TAG, "loadDataWithBaseURL: RUN");
                 ((MyWebView)getView()).loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
             }
         });

@@ -58,7 +58,7 @@ import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Color;
 
-import ru.dublgis.androidhelpers.Log;
+//import ru.dublgis.androidhelpers.Log;
 
 
 /*!
@@ -167,7 +167,7 @@ abstract class OffscreenView
 
     OffscreenView()
     {
-        Log.i(TAG, "OffscreenView constructor");
+       // Log.i(TAG, "OffscreenView constructor");
     }
 
     public void SetObjectName(String name)
@@ -214,13 +214,13 @@ abstract class OffscreenView
         {
             if (runnable == null)
             {
-                Log.e(TAG, "OffscreenView.runOnUiThread: null runnable!");
+               // Log.e(TAG, "OffscreenView.runOnUiThread: null runnable!");
                 return false;
             }
             final Activity context = getActivity();
             if (context == null)
             {
-                Log.e(TAG, "OffscreenView.runOnUiThread: cannot schedule task because of the null context!");
+               // Log.e(TAG, "OffscreenView.runOnUiThread: cannot schedule task because of the null context!");
                 return false;
             }
             // Log.i(TAG, "OffscreenView.runOnUiThread: scheduling runnable...");
@@ -229,7 +229,7 @@ abstract class OffscreenView
         }
         catch (final Throwable e)
         {
-            Log.e(TAG, "Exception when posting a runnable:", e);
+           // Log.e(TAG, "Exception when posting a runnable:", e);
             return false;
         }
     }
@@ -276,15 +276,15 @@ abstract class OffscreenView
      */
     public boolean createView()
     {
-        Log.i(TAG, "OffscreenView.createView(name=\""+object_name_+"\") called");
+        //Log.i(TAG, "OffscreenView.createView(name=\""+object_name_+"\") called");
         boolean result = runOnUiThread(new Runnable() {
             @Override
             public void run()
             {
-                Log.i(TAG, "OffscreenView.createView: run/syncing...");
+          //      Log.i(TAG, "OffscreenView.createView: run/syncing...");
                 synchronized (view_variables_mutex_) // Using these variables
                 {
-                    Log.i(TAG, "OffscreenView.createView: creating the view!");
+            //        Log.i(TAG, "OffscreenView.createView: creating the view!");
                     final Activity activity = getActivity();
 
                     // Call final widget implementation function to handle actual
@@ -324,7 +324,7 @@ abstract class OffscreenView
                     // Process command queue
                     synchronized (view_existence_mutex_)
                     {
-                        Log.i(TAG, "createView: processing "+(precreation_actions_.size()+1)+" actions...");
+                      //  Log.i(TAG, "createView: processing "+(precreation_actions_.size()+1)+" actions...");
                         Iterator<Runnable> it = precreation_actions_.iterator();
                         int i = 0;
                         while(it.hasNext())
@@ -341,7 +341,7 @@ abstract class OffscreenView
                 }
             }
         });
-        Log.i(TAG, "createView result="+result);
+      //  Log.i(TAG, "createView result="+result);
         return result;
     }
 
@@ -350,13 +350,13 @@ abstract class OffscreenView
         final Activity activity = getActivity();
         if (activity == null)
         {
-            Log.e(TAG, "Failed find main layout because the activity is null!");
+           // Log.e(TAG, "Failed find main layout because the activity is null!");
             return null;
         }
         ViewGroup vg = (ViewGroup)activity.findViewById(android.R.id.content);
         if (vg == null)
         {
-            Log.e(TAG, "findViewById failed to find content!");
+          //  Log.e(TAG, "findViewById failed to find content!");
         }
         return vg;
     }
@@ -369,26 +369,26 @@ abstract class OffscreenView
                 if (!attaching_mode_ || is_attached_) {
                     return false;
                 }
-                Log.i(TAG, "uiAttachViewToQtScreen " + object_name_);
+              //  Log.i(TAG, "uiAttachViewToQtScreen " + object_name_);
                 if (layout_ == null) {
-                    Log.e(TAG, "Failed to insert " + object_name_ + " into the ViewGroup because View is null!");
+                   // Log.e(TAG, "Failed to insert " + object_name_ + " into the ViewGroup because View is null!");
                     return false;
                 }
                 ViewGroup vg = getMainLayout();
                 if (vg != null) {
-                    Log.i(TAG, "Inserting " + object_name_ + " (layout_ id=" + layout_.getId() + ") into the ViewGroup...");
+                  //  Log.i(TAG, "Inserting " + object_name_ + " (layout_ id=" + layout_.getId() + ") into the ViewGroup...");
                     vg.addView(layout_);
                     is_attached_ = true;
                     return true;
                 } else {
-                    Log.w(TAG, "Failed to insert " + object_name_ + " into the ViewGroup because it was not found!");
+                   // Log.w(TAG, "Failed to insert " + object_name_ + " into the ViewGroup because it was not found!");
                     return false;
                 }
             }
         }
         catch (final Throwable e)
         {
-            Log.e(TAG, "Exception in uiAttachViewToQtScreen:", e);
+       //     Log.e(TAG, "Exception in uiAttachViewToQtScreen:", e);
             return false;
         }
     }
@@ -398,7 +398,7 @@ abstract class OffscreenView
      */
     private boolean uiDetachViewFromQtScreen()
     {
-        Log.i(TAG, "uiDetachViewFromQtScreen " + object_name_);
+      //  Log.i(TAG, "uiDetachViewFromQtScreen " + object_name_);
         uiHideKeyboardFromView();
         try
         {
@@ -406,14 +406,14 @@ abstract class OffscreenView
             final View view = getView();
             if (activity == null || layout_ == null || view == null)
             {
-                Log.w(TAG, "Could not remove "+object_name_+" from the ViewGroup because Activity, layout or view is null.");
+               // Log.w(TAG, "Could not remove "+object_name_+" from the ViewGroup because Activity, layout or view is null.");
                 return false;
             }
             // Remove layout_ from its previous known parent.
             ViewGroup parent = (ViewGroup)layout_.getParent();
             if (parent != null)
             {
-                Log.i(TAG, "Removing "+object_name_+" (layout_ id="+layout_.getId()+") from its parent...");
+           //     Log.i(TAG, "Removing "+object_name_+" (layout_ id="+layout_.getId()+") from its parent...");
                 parent.removeView(layout_);
                 is_attached_ = false;
             }
@@ -421,7 +421,7 @@ abstract class OffscreenView
             ViewGroup vg = (ViewGroup)activity.findViewById(android.R.id.content);
             if (vg != null)
             {
-                Log.i(TAG, "Removing "+object_name_+" (layout_ id="+layout_.getId()+") from the ViewGroup...");
+              //  Log.i(TAG, "Removing "+object_name_+" (layout_ id="+layout_.getId()+") from the ViewGroup...");
                 if (view.isFocused())
                 {
                     int count = vg.getChildCount();
@@ -437,7 +437,7 @@ abstract class OffscreenView
                                }
                            } catch (final Throwable e) {} // ClassCastException
                            child.requestFocus();
-                           Log.i(TAG, "Successfully passed focus from "+object_name_);
+                         //  Log.i(TAG, "Successfully passed focus from "+object_name_);
                            break;
                        }
                     }
@@ -448,13 +448,13 @@ abstract class OffscreenView
             }
             else
             {
-                Log.w(TAG, "Failed to remove "+object_name_+" from the ViewGroup because it was not found.");
+              //  Log.w(TAG, "Failed to remove "+object_name_+" from the ViewGroup because it was not found.");
                 return false;
             }
         }
         catch (final Throwable e)
         {
-            Log.e(TAG, "Exception in uiDetachViewFromQtScreen:", e);
+          //  Log.e(TAG, "Exception in uiDetachViewFromQtScreen:", e);
             return false;
         }
     }
@@ -482,7 +482,7 @@ abstract class OffscreenView
                         }
                         else if (!attaching && is_attached_)
                         {
-                            Log.v(TAG, "setAttachingMode: view " + object_name_ + " was attached, do uiDetachViewFromQtScreen");
+                          //  Log.v(TAG, "setAttachingMode: view " + object_name_ + " was attached, do uiDetachViewFromQtScreen");
                             uiDetachViewFromQtScreen();
                         }
                     }
@@ -501,7 +501,7 @@ abstract class OffscreenView
                 View v = getView();
                 if (v != null && attaching_mode_)
                 {
-                    Log.i(TAG, "reattachView " + object_name_);
+                  //  Log.i(TAG, "reattachView " + object_name_);
                     uiDetachViewFromQtScreen();
                     uiAttachViewToQtScreen();
                 }
@@ -515,14 +515,14 @@ abstract class OffscreenView
      */
     void initializeGL()
     {
-        Log.i(TAG, "OffscreenView.intializeGL(name=\""+object_name_+"\", texture="+gl_texture_id_+")");
+      //  Log.i(TAG, "OffscreenView.intializeGL(name=\""+object_name_+"\", texture="+gl_texture_id_+")");
         runViewAction(new Runnable() {
             @Override
             public void run()
             {
                 synchronized (texture_mutex_)
                 {
-                    Log.i(TAG, "OffscreenView.intializeGL(name=\""+object_name_+"\", texture="+gl_texture_id_+") RUN");
+                   // Log.i(TAG, "OffscreenView.intializeGL(name=\""+object_name_+"\", texture="+gl_texture_id_+") RUN");
                     rendering_surface_ = new OffscreenGLTextureRenderingSurface();
                     if (layout_ != null)
                     {
@@ -545,7 +545,7 @@ abstract class OffscreenView
 
     void initializeBitmap(final Bitmap bitmap_a, final Bitmap bitmap_b)
     {
-        Log.i(TAG, "OffscreenView.intializeBitmap(name=\""+object_name_+"\"");
+      //  Log.i(TAG, "OffscreenView.intializeBitmap(name=\""+object_name_+"\"");
 
         synchronized (texture_mutex_)
         {
@@ -559,7 +559,7 @@ abstract class OffscreenView
             {
                 synchronized (texture_mutex_)
                 {
-                    Log.i(TAG, "OffscreenView.intializeBitmap(name=\""+object_name_+"\") RUN");
+                 //   Log.i(TAG, "OffscreenView.intializeBitmap(name=\""+object_name_+"\") RUN");
                     if (layout_ != null)
                     {
                         runViewAction(new Runnable(){
@@ -601,7 +601,7 @@ abstract class OffscreenView
                     {
                         if (!last_visibility_)
                         {
-                            Log.v(TAG, "setVisible: detaching hidden view " + object_name_);
+                            //Log.v(TAG, "setVisible: detaching hidden view " + object_name_);
                             uiDetachViewFromQtScreen();
                         }
                         v.setVisibility(android_visiblity);
@@ -616,7 +616,7 @@ abstract class OffscreenView
                     }
                     else
                     {
-                        Log.i(TAG, "setVisible: already \"" + last_visibility_ + "\" for " + object_name_);
+                     //   Log.i(TAG, "setVisible: already \"" + last_visibility_ + "\" for " + object_name_);
                     }
                 }
             }
@@ -649,7 +649,7 @@ abstract class OffscreenView
                 }
                 catch (final Throwable e)
                 {
-                    Log.e(TAG, "setEnabled exception: ", e);
+                  //  Log.e(TAG, "setEnabled exception: ", e);
                 }
             }
         });
@@ -726,7 +726,7 @@ abstract class OffscreenView
             // C++ part is not set or already lost (may happen during init/deinit).
             if (getNativePtr() == 0)
             {
-                Log.i(TAG, "doDrawViewOnTexture: native ptr is null: " + object_name_);
+                //Log.i(TAG, "doDrawViewOnTexture: native ptr is null: " + object_name_);
                 return false;
             }
 
@@ -734,7 +734,7 @@ abstract class OffscreenView
             // with black screen.
             if (!last_visibility_)
             {
-                Log.i(TAG, "doDrawViewOnTexture: skipping paint for invisible view: " + object_name_);
+                //Log.i(TAG, "doDrawViewOnTexture: skipping paint for invisible view: " + object_name_);
                 return false;
             }
 
@@ -742,7 +742,7 @@ abstract class OffscreenView
             if (v != null && v.getVisibility() != View.VISIBLE)
             {
                 // Note: setVisible()'s lambda will schedule one more paint after the view will become visible.
-                Log.i(TAG, "doDrawViewOnTexture: skipping paint because view visibility was not applied yet: " + object_name_);
+               // Log.i(TAG, "doDrawViewOnTexture: skipping paint because view visibility was not applied yet: " + object_name_);
                 return false;
             }
 
@@ -752,7 +752,7 @@ abstract class OffscreenView
                 Canvas canvas = rendering_surface_.lockCanvas();
                 if (canvas == null)
                 {
-                    Log.e(TAG, "doDrawViewOnTexture: failed to lock canvas for: "+object_name_);
+                 //   Log.e(TAG, "doDrawViewOnTexture: failed to lock canvas for: "+object_name_);
                 }
                 else
                 {
@@ -791,7 +791,7 @@ abstract class OffscreenView
                     }
                     catch (final Throwable e)
                     {
-                        Log.e(TAG, "doDrawViewOnTexture painting failed!", e);
+                      //  Log.e(TAG, "doDrawViewOnTexture painting failed!", e);
                     }
 
                     rendering_surface_.unlockCanvas(canvas);
@@ -804,7 +804,7 @@ abstract class OffscreenView
             }
             catch (final Throwable e)
             {
-                Log.e(TAG, "doDrawViewOnTexture exception:", e);
+              //  Log.e(TAG, "doDrawViewOnTexture exception:", e);
             }
         }
         return result;
@@ -894,7 +894,7 @@ abstract class OffscreenView
     {
         if (getNativePtr() == 0)
         {
-            Log.i(TAG, "ProcessMouseEvent: zero native ptr, ignoring.");
+            //Log.i(TAG, "ProcessMouseEvent: zero native ptr, ignoring.");
             return;
         }
         final View view = getView();
@@ -943,8 +943,8 @@ abstract class OffscreenView
             @Override
             public void run()
             {
-                Log.i(TAG, "setFocused(" + focused + ") " + object_name_ + ", show keyboard on focus: "
-                    + show_keyboard_on_focus_in_ + ": run");
+           //     Log.i(TAG, "setFocused(" + focused + ") " + object_name_ + ", show keyboard on focus: "
+           //         + show_keyboard_on_focus_in_ + ": run");
                 final View v = getView();
                 if (v != null)
                 {
@@ -985,13 +985,13 @@ abstract class OffscreenView
             final View v = getView();
             if (v == null)
             {
-                Log.e(TAG, "uiHideKeyboardFromView: View is null");
+                //Log.e(TAG, "uiHideKeyboardFromView: View is null");
                 return;
             }
             InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm == null)
             {
-                Log.w(TAG, "uiHideKeyboardFromView: InputMethodManager is null");
+                //Log.w(TAG, "uiHideKeyboardFromView: InputMethodManager is null");
                 return;
             }
             IBinder token = v.getWindowToken();
@@ -1001,12 +1001,12 @@ abstract class OffscreenView
             }
             else
             {
-                Log.i(TAG, "uiHideKeyboardFromView: Window token is null");
+                //Log.i(TAG, "uiHideKeyboardFromView: Window token is null");
             }
         }
         catch (final Throwable e)
         {
-            Log.e(TAG, "uiHideKeyboardFromView: exception:", e);
+          //  Log.e(TAG, "uiHideKeyboardFromView: exception:", e);
         }
     }
 
@@ -1029,21 +1029,21 @@ abstract class OffscreenView
             final View v = getView();
             if (v == null)
             {
-                Log.e(TAG, "uiShowKeyboard: View is null");
+        //        Log.e(TAG, "uiShowKeyboard: View is null");
                 return;
             }
             InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm == null)
             {
-                Log.w(TAG, "uiShowKeyboard: InputMethodManager is null");
+          //      Log.w(TAG, "uiShowKeyboard: InputMethodManager is null");
                 return;
             }
-            Log.v(TAG, "uiShowKeyboard: do showSoftInput");
+            //Log.v(TAG, "uiShowKeyboard: do showSoftInput");
             imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
         }
         catch (final Throwable e)
         {
-            Log.e(TAG, "uiShowKeyboard: exception:", e);
+      //      Log.e(TAG, "uiShowKeyboard: exception:", e);
         }
     }
 
@@ -1055,7 +1055,7 @@ abstract class OffscreenView
             @Override
             public void run()
             {
-                Log.v(TAG, "showKeyboard: call uiShowKeyboard");
+        //        Log.v(TAG, "showKeyboard: call uiShowKeyboard");
                 uiShowKeyboard();
             }
         });
@@ -1078,7 +1078,7 @@ abstract class OffscreenView
     {
         synchronized (texture_mutex_) {
             synchronized (view_variables_mutex_) {
-                Log.i(TAG, "resizeOffscreenView " + w + "x" + h);
+        //        Log.i(TAG, "resizeOffscreenView " + w + "x" + h);
                 view_width_ = w;
                 view_height_ = h;
 
@@ -1162,7 +1162,7 @@ abstract class OffscreenView
             {
                 if (is_attached_)
                 {
-                    Log.v(TAG, "cppDestroyed while view is still attached, detaching it now for " + object_name_);
+               //     Log.v(TAG, "cppDestroyed while view is still attached, detaching it now for " + object_name_);
                     uiDetachViewFromQtScreen();
                 }
             }
@@ -1359,12 +1359,12 @@ abstract class OffscreenView
             synchronized (texture_mutex_)
             {
                 synchronized (view_variables_mutex_) {
-                    Log.d(TAG, "OffscreenGLTextureRenderingSurface(obj=\"" + object_name_ + "\", texture=" + gl_texture_id_
-                            + ", w=" + view_width_ + ", h=" + view_height_ + ") tid=" + Thread.currentThread().getId());
+                    //Log.d(TAG, "OffscreenGLTextureRenderingSurface(obj=\"" + object_name_ + "\", texture=" + gl_texture_id_
+                    //        + ", w=" + view_width_ + ", h=" + view_height_ + ") tid=" + Thread.currentThread().getId());
                     surface_texture_ = new SurfaceTexture(gl_texture_id_);
                     surface_ = new Surface(surface_texture_);
                     setNewSize(view_width_, view_height_);
-                    Log.d(TAG, "OffscreenGLTextureRenderingSurface created");
+                    //Log.d(TAG, "OffscreenGLTextureRenderingSurface created");
                 }
             }
         }
@@ -1378,7 +1378,7 @@ abstract class OffscreenView
             }
             catch (final Throwable e)
             {
-                Log.e(TAG, "Failed to lock canvas for "+object_name_, e);
+                //Log.e(TAG, "Failed to lock canvas for "+object_name_, e);
                 return null;
             }
         }
@@ -1396,7 +1396,7 @@ abstract class OffscreenView
             }
             catch (final Throwable e)
             {
-                Log.e(TAG, "Failed to unlock canvas", e);
+                //Log.e(TAG, "Failed to unlock canvas", e);
             }
         }
 
@@ -1433,7 +1433,7 @@ abstract class OffscreenView
             }
             catch (final Throwable e)
             {
-                Log.e(TAG, "Failed to update texture", e);
+                //Log.e(TAG, "Failed to update texture", e);
                 return false;
             }
         }
@@ -1546,7 +1546,7 @@ abstract class OffscreenView
             @Override
             public void run()
             {
-                Log.d(TAG, "testFunction runnable!");
+                //Log.d(TAG, "testFunction runnable!");
                 ViewGroup content = (ViewGroup)getActivity().findViewById(android.R.id.content);
                 View mChildOfContent = content.getChildAt(0);
                 mChildOfContent.requestLayout();

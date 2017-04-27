@@ -57,7 +57,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Color;
 import android.text.TextUtils;
 
-import ru.dublgis.androidhelpers.Log;
+//import ru.dublgis.androidhelpers.Log;
 
 
 class OffscreenEditText extends OffscreenView
@@ -104,7 +104,7 @@ class OffscreenEditText extends OffscreenView
         public MyEditText(Context context)
         {
             super(context);
-            Log.i(TAG, "MyEditText constructor");
+            //Log.i(TAG, "MyEditText constructor");
             addTextChangedListener(new MyTextWatcher());
 
             // Eliminate any system background by setting null background drawable.
@@ -112,12 +112,12 @@ class OffscreenEditText extends OffscreenView
             // all these custom vendors backrounds.
             if (getApiLevel() >= 16)
             {
-                Log.i(TAG, "MyEditText constructor: using API >= 16 method (setBackground)");
+              //  Log.i(TAG, "MyEditText constructor: using API >= 16 method (setBackground)");
                 setBackground(null);
             }
             else
             {
-                Log.i(TAG, "MyEditText constructor: using API < 16 method (setBackgroundDrawable)");
+                //Log.i(TAG, "MyEditText constructor: using API < 16 method (setBackgroundDrawable)");
                 setBackgroundDrawable(null);
             }
         }
@@ -135,7 +135,7 @@ class OffscreenEditText extends OffscreenView
             }
             catch (final Throwable e)
             {
-                Log.e(TAG, "Could not change default cursor behaviour, exception: " + e);
+                //Log.e(TAG, "Could not change default cursor behaviour, exception: " + e);
             }
         }
 
@@ -182,7 +182,7 @@ class OffscreenEditText extends OffscreenView
             }
             catch (final Throwable e)
             {
-                Log.e(TAG, "Exception in onDraw: " + e);
+               // Log.e(TAG, "Exception in onDraw: " + e);
             }
         }
 
@@ -337,7 +337,7 @@ class OffscreenEditText extends OffscreenView
                     return super.onTouchEvent(event);
                 }
             } catch (final Throwable e) {
-                Log.e(TAG, "onTouchEvent exception: ", e);
+               // Log.e(TAG, "onTouchEvent exception: ", e);
             }
             return false;
         }
@@ -399,7 +399,7 @@ class OffscreenEditText extends OffscreenView
                 }
                 catch (final Throwable e)
                 {
-                    Log.e(TAG, "Exception in setText: " + e);
+                   // Log.e(TAG, "Exception in setText: " + e);
                 }
             }
         });
@@ -435,7 +435,7 @@ class OffscreenEditText extends OffscreenView
                 }
                 catch (final Throwable e)
                 {
-                    Log.e(TAG, "Failed to create Typeface with name " + name + ": " + e);
+                  //  Log.e(TAG, "Failed to create Typeface with name " + name + ": " + e);
                 }
             }
         });
@@ -453,7 +453,7 @@ class OffscreenEditText extends OffscreenView
                 }
                 catch (final Throwable e)
                 {
-                    Log.e(TAG, "Failed to create Typeface from file:" + e);
+                   // Log.e(TAG, "Failed to create Typeface from file:" + e);
                 }
             }
         });
@@ -474,7 +474,7 @@ class OffscreenEditText extends OffscreenView
                     }
                     catch (final Throwable e)
                     {
-                        Log.e(TAG, "Failed to create Typeface from asset:" + e);
+                       // Log.e(TAG, "Failed to create Typeface from asset:" + e);
                     }
                 }
             }
@@ -808,7 +808,7 @@ class OffscreenEditText extends OffscreenView
                 try {
                     ((MyEditText)getView()).setSelection(start, stop);
                 } catch (final Throwable e) {
-                    Log.e(TAG, "Failed to set bounds to (" + start + ", " + stop + "): " + e);
+                    //Log.e(TAG, "Failed to set bounds to (" + start + ", " + stop + "): " + e);
                 }
             }
         });
@@ -885,7 +885,7 @@ class OffscreenEditText extends OffscreenView
                         password_text_watcher_ = null;
                         myedittext.setInputType(input_type_before_password_with_custom_typeface_);
                     } else {
-                        Log.e(TAG, "Attempting to clear password mode with default typeface when it was not set!");
+                        //Log.e(TAG, "Attempting to clear password mode with default typeface when it was not set!");
                     }
                 // Enabling the mode
                 } else {
@@ -921,7 +921,7 @@ class OffscreenEditText extends OffscreenView
                         myedittext.setTransformationMethod(PasswordTransformationMethod.getInstance());
                         myedittext.addTextChangedListener(password_text_watcher_);
                     } else {
-                        Log.e(TAG, "Attempting to set password mode with default typeface twice!");
+                        //Log.e(TAG, "Attempting to set password mode with default typeface twice!");
                     }
                 } // Enabling mode
             } // run()

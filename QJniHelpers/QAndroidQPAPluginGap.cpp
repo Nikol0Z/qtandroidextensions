@@ -164,14 +164,14 @@ void preloadJavaClass(const char * class_name)
 	// not working properly in some situations (???)
 	// Also, it is nicer to have a single function to preload classed and single path to call it.
 	// So, let's call it through Java.
-	// qDebug()<<__PRETTY_FUNCTION__<<class_name;
+	qDebug()<<__PRETTY_FUNCTION__<<class_name;
 	QJniEnvPtr jep;
 	if (jep.isClassPreloaded(class_name))
 	{
-		// qDebug()<<"Class already pre-loaded:"<<class_name;
+		qDebug()<<"Class already pre-loaded:"<<class_name;
 		return;
 	}
-	// qDebug()<<"Pre-loading:"<<class_name;
+	qDebug()<<"Pre-loading:"<<class_name;
 
 	static const char * const c_class_name = "ru/dublgis/qjnihelpers/ClassLoader";
 	static const char * const c_method_name = "callJNIPreloadClass";

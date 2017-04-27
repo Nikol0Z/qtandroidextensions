@@ -26,7 +26,7 @@ HEADERS += \
     $$PWD/QAndroidScreenLayoutHandler.h \
     $$PWD/QAndroidToast.h \
     $$PWD/QAndroidDesktopUtils.h \
-    $$PWD/QAndroidStorages_.h \
+    $$PWD/QAndroidStorages.h \
     $$PWD/QAndroidStorages_p.h
     $$PWD/QAndroidPartialWakeLocker.h
 

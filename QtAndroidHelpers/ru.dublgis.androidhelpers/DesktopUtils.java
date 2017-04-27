@@ -56,7 +56,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
+//import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.provider.Settings.Secure;
 
@@ -209,6 +209,7 @@ public class DesktopUtils
         //    ", authorities = \"" + authorities + "\"");
         try
         {
+            /*
             // TODO: support multiple recipients
             String[] recipients = new String[]{to};
 
@@ -266,6 +267,7 @@ public class DesktopUtils
             }
 
             ctx.startActivity(chooserIntent);
+            */
             return true;
         }
         catch (Exception e)
@@ -278,6 +280,7 @@ public class DesktopUtils
     public static boolean sendEmail(final Context ctx, final String to, final String subject, final String body, final String[] attachment, final String authorities) {
         try
         {
+            /*
             final String[] recipients = new String[]{ to };
 
             final Intent intent = new Intent(attachment.length > 1 ? Intent.ACTION_SEND_MULTIPLE : Intent.ACTION_SENDTO);
@@ -350,7 +353,7 @@ public class DesktopUtils
             chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             ctx.startActivity(chooserIntent);
-
+            */
             return true;
         }
         catch (Exception exception)

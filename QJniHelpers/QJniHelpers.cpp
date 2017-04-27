@@ -40,11 +40,11 @@
 #include "QJniHelpers.h"
 #include "QAndroidQPAPluginGap.h"
 
-#if defined(QJNIHELPERS_VERBOSE_LOG)
+//#if defined(QJNIHELPERS_VERBOSE_LOG)
 	#define VERBOSE(x) x
-#else
-	#define VERBOSE(x)
-#endif
+//#else
+//	#define VERBOSE(x)
+//#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // Private Stuff
