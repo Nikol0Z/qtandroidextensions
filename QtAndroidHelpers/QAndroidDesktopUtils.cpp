@@ -272,7 +272,10 @@ QString getUniqueDeviceId()
 		QString telephony_id = getTelephonyDeviceId();
 		QString android_id = getAndroidId();
         QString wifi_id = getWifiMacAddress(); 
-        QString result = getTelephonyDeviceId() + getAndroidId() + getWifiMacAddress();
+        qDebug()<< "telephony_id "<< telephony_id;
+        qDebug()<< "android_id "<< android_id;
+        qDebug()<< "wifi_id "<< wifi_id;
+        QString result = getWifiMacAddress() + getTelephonyDeviceId() + getAndroidId();
         device_id = QString(QCryptographicHash::hash(result.toUtf8(),QCryptographicHash::Md5).toHex());
         /*
 		if (!telephony_id.isEmpty())
