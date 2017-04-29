@@ -52,6 +52,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import java.net.NetworkInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -60,6 +61,7 @@ import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.provider.Settings.Secure;
 import android.net.wifi.WifiManager;
+import java.util.Collections;
 
 
 public class DesktopUtils
@@ -494,18 +496,30 @@ public class DesktopUtils
     {
         try
         {
-            WifiManager wifiManager = (WifiManager)ctx.getSystemService(Context.WIFI_SERVICE);
-            if (wifiManager == null)
-            {
-                return "";
-            }
-            return wifiManager.getConnectionInfo().getMacAddress();
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+               if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+                  byte[] macBytes = nif.getHardwareAddress();
+                  if (macBytes == null) {
+                         return "";
+                  }
+                  StringBuilder res1 = new StringBuilder();
+                  for (byte b : macBytes) {
+                      res1.append(String.format("%02X:",b));
+                  }
+
+                 if (res1.length() > 0) {
+                     res1.deleteCharAt(res1.length() - 1);
+                 }
+                 return res1.toString();
+           }
         }
         catch (Exception e)
         {
             Log.e(TAG, "getWifiMacAddress exception: "+e);
-            return "";
+            return "02:00:00:00:00:00"; 
         }
+        return "02:00:00:00:00:00"; 
     }
 
     public static String getDisplayCountry(final Context ctx)
