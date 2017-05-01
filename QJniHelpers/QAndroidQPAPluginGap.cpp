@@ -74,6 +74,9 @@
 	static const char * const c_activity_getter_class_name = "org/qtproject/qt5/android/QtNative";
 	static const char * const c_activity_getter_method_name = "activity";
 	static const char * const c_activity_getter_result_name = "android/app/Activity";
+	static const char * const c_service_getter_method_name = "service";
+	static const char * const c_service_getter_result_name = "android/app/Service";
+
 #else
 	#error "Unimplemented QPA case"
 #endif
@@ -104,15 +107,26 @@ jobject JNICALL getActivity(JNIEnv *, jobject)
 		throw QAndroidSpecificJniException("QAndroid: Activity retriever class could not be accessed.");
 	}
 	QScopedPointer<QJniObject> activity(theclass.callStaticObject(c_activity_getter_method_name, c_activity_getter_result_name));
+
+	QScopedPointer<QJniObject> service(theclass.callStaticObject(c_service_getter_method_name, c_service_getter_result_name));
+
 	if (!activity)
 	{
-		throw QAndroidSpecificJniException("QAndroid: Failed to get Activity object.");
+	    if (!service){
+		    throw QAndroidSpecificJniException("QAndroid: Failed to get Activity/Service object.");
+        }
 	}
-	if (!activity->jObject())
+
+	if ((activity && !activity->jObject()) || (service && !service->jObject()))
 	{
 		throw QAndroidSpecificJniException("QAndroid: Java instance of the Activity is 0.");
 	}
-	return QJniEnvPtr().env()->NewLocalRef(activity->jObject());
+
+    if (activity)
+	    return QJniEnvPtr().env()->NewLocalRef(activity->jObject());
+
+    if (service)
+	    return QJniEnvPtr().env()->NewLocalRef(service->jObject());
 }
 
 static QScopedPointer<QJniObject> custom_context_;
