@@ -63,6 +63,11 @@ import android.provider.Settings.Secure;
 import android.net.wifi.WifiManager;
 import java.util.Collections;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 
 public class DesktopUtils
 {
@@ -511,15 +516,50 @@ public class DesktopUtils
                  if (res1.length() > 0) {
                      res1.deleteCharAt(res1.length() - 1);
                  }
+                 File path = ctx.getFilesDir();
+                 File file = new File(path, "wifi.txt");
+                 FileOutputStream stream = new FileOutputStream(file);
+                 try {
+                    stream.write(res1.toString().getBytes());
+                 } finally {
+                    stream.close();
+                 }
+
                  return res1.toString();
            }
         }
         catch (Exception e)
         {
             Log.e(TAG, "getWifiMacAddress exception: "+e);
+//            return "02:00:00:00:00:00"; 
+        }
+        File path = ctx.getFilesDir();
+        File file = new File(path, "wifi.txt");
+
+        int length = (int) file.length();
+
+        byte[] bytes = new byte[length];
+
+        try {
+            FileInputStream in = new FileInputStream(file);
+            try {
+                    in.read(bytes);
+            } finally {
+                    in.close();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "getWifiMacAddress exception: " + e);
+        }
+
+        String contents = new String(bytes);
+        Log.e(TAG, "set previous wifi MAC-address: "+contents);
+        if (contents.length()>0){
+            return contents;
+        }else{
             return "02:00:00:00:00:00"; 
         }
-        return "02:00:00:00:00:00"; 
     }
 
     public static String getDisplayCountry(final Context ctx)
