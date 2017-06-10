@@ -68,12 +68,14 @@ QAndroidScannerDataProvider::~QAndroidScannerDataProvider()
 }
 
 
-void QAndroidScannerDataProvider::init()
+bool QAndroidScannerDataProvider::init()
 {
+    bool result = false;
 	if (isJniReady())
 	{
-		jni()->callBool("init");
+		result = jni()->callBool("init");
 	}
+    return result;
 }
 
 QString QAndroidScannerDataProvider::result()

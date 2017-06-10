@@ -57,7 +57,7 @@ private:
 	friend void JNICALL Java_ScannerListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
 
 public slots:
-	void init();
+	bool init();
     QString result();
     
 
