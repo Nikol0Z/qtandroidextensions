@@ -10,6 +10,7 @@ HEADERS += \
     $$PWD/Mobility/QAndroidCellDataProvider.h \
     $$PWD/Mobility/QAndroidWifiDataProvider.h \
     $$PWD/Mobility/QAndroidBatteryDataProvider.h \
+    $$PWD/Mobility/QAndroidScannerDataProvider.h \
     $$PWD/Mobility/CellData.h \
     $$PWD/Mobility/WifiData.h \
     $$PWD/QLocks/QLockBase.h  \
@@ -38,6 +39,7 @@ SOURCES += \
     $$PWD/Mobility/QAndroidCellDataProvider.cpp \
     $$PWD/Mobility/QAndroidWifiDataProvider.cpp \
     $$PWD/Mobility/QAndroidBatteryDataProvider.cpp \
+    $$PWD/Mobility/QAndroidScannerDataProvider.cpp \
     $$PWD/Mobility/CellData.cpp \
     $$PWD/Mobility/WifiData.cpp \
     $$PWD/QLocks/QLock.cpp \

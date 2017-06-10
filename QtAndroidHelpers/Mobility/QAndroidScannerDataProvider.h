@@ -1,12 +1,13 @@
 /*
 	Offscreen Android Views library for Qt
 
-    Authors:
-    Uladzislau Vasilyeu <vasvlad@gmail.com>
+	Authors:
+	Evgeniy A. Samoylov <ghelius@gmail.com>
 
-    Distrbuted under The BSD License
+	Distrbuted under The BSD License
 
-    Copyright (c) 2017.
+	Copyright (c) 2016, DoubleGIS, LLC.
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -37,37 +38,35 @@
 
 #include <QtCore/QObject>
 #include <QJniHelpers.h>
+#include <QAndroidJniObject>
 #include "IJniObjectLinker.h"
-#include "CellData.h"
-
 
 namespace Mobility {
 
-class QAndroidCellDataProvider : public QObject
+void preloadJavaClasses();
+class QAndroidScannerDataProvider : public QObject
 {
 	Q_OBJECT
-	JNI_LINKER_DECL(QAndroidCellDataProvider)
+	JNI_LINKER_DECL(QAndroidScannerDataProvider)
 
 public:
-	QAndroidCellDataProvider(QObject * parent = 0);
-	virtual ~QAndroidCellDataProvider();
-
-public:
-	CellDataPtr getLastData();
+	QAndroidScannerDataProvider(QObject * parent = 0);
+	virtual ~QAndroidScannerDataProvider();
 
 private:
-	friend void JNICALL Java_CellListener_cellUpdate(JNIEnv *, jobject, jlong native_ptr, jint cid, jint lac, jint mcc, jint mnc, jint rssi);
-	void cellUpdate(int cid, int lac, int mcc, int mnc, int rssi);
+	friend void JNICALL Java_ScannerListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
 
 public slots:
-	void start();
-	void stop();
+	void init();
+    QString result();
+    
 
 signals:
-	void update();
-
+	void scannerInfoUpdate(QString code);
+	void scannerInfoUpdate(bool code);
+	void scannerInfoUpdate(jstring code);
 private:
-	CellDataPtr last_data_;
+	void scannerInfo(bool code);
 };
 
 }

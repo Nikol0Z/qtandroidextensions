@@ -33,41 +33,63 @@
 	THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-
-#include <QtCore/QObject>
-#include <QJniHelpers.h>
-#include "IJniObjectLinker.h"
-#include "CellData.h"
+#include "QAndroidScannerDataProvider.h"
+#include <QAndroidQPAPluginGap.h>
+#include "TJniObjectLinker.h"
 
 
 namespace Mobility {
 
-class QAndroidCellDataProvider : public QObject
+
+Q_DECL_EXPORT void JNICALL Java_ScannerListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code)
 {
-	Q_OBJECT
-	JNI_LINKER_DECL(QAndroidCellDataProvider)
+	JNI_LINKER_OBJECT(Mobility::QAndroidScannerDataProvider, native_ptr, proxy)
+	proxy->scannerInfo(code);
+}
 
-public:
-	QAndroidCellDataProvider(QObject * parent = 0);
-	virtual ~QAndroidCellDataProvider();
 
-public:
-	CellDataPtr getLastData();
-
-private:
-	friend void JNICALL Java_CellListener_cellUpdate(JNIEnv *, jobject, jlong native_ptr, jint cid, jint lac, jint mcc, jint mnc, jint rssi);
-	void cellUpdate(int cid, int lac, int mcc, int mnc, int rssi);
-
-public slots:
-	void start();
-	void stop();
-
-signals:
-	void update();
-
-private:
-	CellDataPtr last_data_;
+static const JNINativeMethod methods[] = {
+	{"getContext", "()Landroid/content/Context;", (void*)QAndroidQPAPluginGap::getCurrentContext},
+	{"scannerInfoUpdate", "(JZ)V", (void*)Java_ScannerListener_scannerInfoUpdate},
 };
+
+
+JNI_LINKER_IMPL(QAndroidScannerDataProvider, "ru/dublgis/androidhelpers/mobility/ScannerListener", methods)
+
+QAndroidScannerDataProvider::QAndroidScannerDataProvider(QObject * parent)
+	: QObject(parent)
+	, jniLinker_(new JniObjectLinker(this))
+{
+}
+
+
+QAndroidScannerDataProvider::~QAndroidScannerDataProvider()
+{
+}
+
+
+void QAndroidScannerDataProvider::init()
+{
+	if (isJniReady())
+	{
+		jni()->callBool("init");
+	}
+}
+
+QString QAndroidScannerDataProvider::result()
+{
+    QString result;
+	if (isJniReady())
+	{
+		result = jni()->callString("result");
+	}
+    return result;
+}
+
+
+void QAndroidScannerDataProvider::scannerInfo(bool code)
+{
+    emit scannerInfoUpdate(code);
+}
 
 }
