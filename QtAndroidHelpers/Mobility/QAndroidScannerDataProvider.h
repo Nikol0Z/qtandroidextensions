@@ -38,12 +38,13 @@
 
 #include <QtCore/QObject>
 #include <QJniHelpers.h>
-#include <QAndroidJniObject>
+//#include <QAndroidJniObject>
 #include "IJniObjectLinker.h"
 
 namespace Mobility {
 
-void preloadJavaClasses();
+//void preloadJavaClasses();
+
 class QAndroidScannerDataProvider : public QObject
 {
 	Q_OBJECT
@@ -62,9 +63,9 @@ public slots:
     
 
 signals:
-	void scannerInfoUpdate(QString code);
+//	void scannerInfoUpdate(QString code);
 	void scannerInfoUpdate(bool code);
-	void scannerInfoUpdate(jstring code);
+//	void scannerInfoUpdate(jstring code);
 private:
 	void scannerInfo(bool code);
 };
