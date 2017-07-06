@@ -40,12 +40,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import ru.dublgis.androidhelpers.Log;
-import android.os.ServiceManager;
 import android.os.RemoteException;
-import device.scanner.DecodeResult;
-import device.scanner.IScannerService;
-import device.scanner.ScannerService;
-
+import device.common.DecodeResult;
+import device.common.ScanConst;
+import device.sdk.ScanManager;
 
 
 public class ScannerListener extends BroadcastReceiver
@@ -55,8 +53,8 @@ public class ScannerListener extends BroadcastReceiver
     private static long native_ptr_ = 0;
     private boolean started_ = false;
 
-	private static IScannerService iScanner = null;
-	private static DecodeResult mDecodeResult = null;
+	private static ScanManager iScanner;
+	private static DecodeResult mDecodeResult;
     private static String result = "";
 
     public ScannerListener(){
@@ -75,23 +73,16 @@ public class ScannerListener extends BroadcastReceiver
     }
 
     public void onReceive(Context context, Intent intent) {
-            Log.e(LOG_TAG, "Broadcast ");
-			if (iScanner != null) {
-				try {
-                   // mDecodeResult.recycle();
-					iScanner.aDecodeGetResult(mDecodeResult);
-                    Log.e(LOG_TAG, "Result QR!!!!!!!!!!!!!!!!!: "+ mDecodeResult.symName);
-                    Log.e(LOG_TAG, "Result QR!!!!!!!!!!!!!!!!!: "+ mDecodeResult.decodeValue);
-                    String s = new String("Polish");
-                    result = mDecodeResult.decodeValue;
-                    scannerInfoUpdate(native_ptr_, true);
-
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
-			}
-
+        Log.e(LOG_TAG, "Broadcast ");
+        if (iScanner != null) {
+            iScanner.aDecodeGetResult(mDecodeResult.recycle());
+            Log.e(LOG_TAG, "Result QR!!!!!!!!!!!!!!!!!: "+ mDecodeResult.symName);
+           // Log.e(LOG_TAG, "Result QR!!!!!!!!!!!!!!!!!: "+ mDecodeResult.decodeValue);
+            //String s = new String("Polish");
+            result = new String(mDecodeResult.decodeValue);
+            scannerInfoUpdate(native_ptr_, true);
         }
+    }
 
     //! Called from C++ to notify us that the associated C++ object is being destroyed.
     public void cppDestroyed()
@@ -102,26 +93,23 @@ public class ScannerListener extends BroadcastReceiver
 	public synchronized boolean init() throws RemoteException {
         try
         {
-            iScanner = IScannerService.Stub.asInterface(ServiceManager
-                    .getService("ScannerService"));
             Log.e(LOG_TAG, "Try Init scanner  ");
+            iScanner = new ScanManager();
             if (iScanner != null) {
                 mDecodeResult = new DecodeResult();
                 Log.e(LOG_TAG, "Init scanner: MP60");
-                iScanner.aDecodeAPIInit();
+
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                 }
-                iScanner.aDecodeSetDecodeEnable(1);
-                iScanner.aDecodeSetResultType(ScannerService.ResultType.DCD_RESULT_USERMSG);
-
+                iScanner.aDecodeSetResultType(ScanConst.ResultType.DCD_RESULT_USERMSG);
                 return true;
 	        }
         }    
         catch (final Throwable e)
         {
-            Log.e(LOG_TAG, "Exception while starting BatteryListener: ", e);
+            Log.e(LOG_TAG, "Exception while starting ScannerListener: ", e);
             return false;
         }
         return false;
