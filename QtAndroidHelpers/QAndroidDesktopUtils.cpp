@@ -199,6 +199,16 @@ void uninstallApk(const QString & packagename)
 		QJniLocalRef(packagename).jObject());
 }
 
+void showNotify(const QString & title, const QString & text){
+	QJniClass du(c_full_class_name_);
+	QAndroidQPAPluginGap::Context activity;
+    du.callStaticParamVoid("showNotify", "Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;",
+		activity.jObject(),
+		QJniLocalRef(title).jObject(), 
+		QJniLocalRef(text).jObject()
+        );
+}
+
 bool callNumber(const QString & number)
 {
 	QJniClass du(c_full_class_name_);

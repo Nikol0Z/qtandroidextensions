@@ -68,11 +68,17 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.res.Resources;
+
 
 public class DesktopUtils
 {
     private static final String TAG = "Grym/DesktopServices";
     private static final boolean verbose = false;
+    private static NotificationManager m_notificationManager;
+    private static Notification.Builder m_builder;
 
     // Returns:
     // -1 - error
@@ -478,6 +484,41 @@ public class DesktopUtils
             return false;
         }
     }
+
+    public static int DrawableResourceId(Context my_context, final String name)
+    {
+        return my_context.getResources().getIdentifier(name, "drawable", my_context.getPackageName());
+    }
+
+
+    public static void  showNotify(final Context ctx, final String title, final String text)
+    {
+
+        try
+        {
+            Log.i(TAG, "Show Notify: "+text);
+
+
+            if (m_notificationManager == null) {
+                m_notificationManager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                m_builder = new Notification.Builder(ctx);
+                int resource = DrawableResourceId(ctx, "icon");
+                m_builder.setSmallIcon(resource);
+                m_builder.setContentTitle(title);
+                Log.i(TAG, "Show Notify2: "+text);
+            }
+            m_builder.setContentText(text);
+            m_notificationManager.notify(1, m_builder.build());
+
+            return;
+        }
+        catch(Exception e)
+        {
+            Log.e(TAG, "showNotify exception: "+e);
+            return;
+        }
+    }
+
 
     public static String getTelephonyDeviceId(final Context ctx)
     {
