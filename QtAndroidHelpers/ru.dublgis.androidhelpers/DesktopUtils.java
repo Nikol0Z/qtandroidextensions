@@ -72,6 +72,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.res.Resources;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 
 public class DesktopUtils
 {
@@ -491,7 +494,7 @@ public class DesktopUtils
     }
 
 
-    public static void  showNotify(final Context ctx, final String title, final String text)
+    public static void  showNotify(final Context ctx, final String title, final String text, final String apppack)
     {
 
         try
@@ -504,9 +507,30 @@ public class DesktopUtils
                 m_builder = new Notification.Builder(ctx);
                 int resource = DrawableResourceId(ctx, "icon");
                 m_builder.setSmallIcon(resource);
+                m_builder.setAutoCancel(true);
                 m_builder.setContentTitle(title);
                 Log.i(TAG, "Show Notify2: "+text);
-            }
+ 
+                if (apppack != ""){
+                    Intent LaunchIntent = null;
+                    Intent intent = null;
+                    PackageManager pm = ctx.getPackageManager();
+                    String name = "";
+                    try {
+                        if (pm != null) {
+                            ApplicationInfo app = ctx.getPackageManager().getApplicationInfo(apppack, 0);
+                            name = (String) pm.getApplicationLabel(app);
+                            LaunchIntent = pm.getLaunchIntentForPackage(apppack);
+                        }
+                        Log.i(TAG, "Show Notify: "+ "Found it:" + name);
+                    } catch (PackageManager.NameNotFoundException e) {
+                                    e.printStackTrace();
+                    }
+                    intent = LaunchIntent;
+                    PendingIntent pIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
+                    m_builder.setContentIntent(pIntent);
+                }
+           }
             m_builder.setContentText(text);
             m_notificationManager.notify(1, m_builder.build());
 

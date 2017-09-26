@@ -89,7 +89,7 @@ QStringList getInstalledAppsList();
 
 QString getDefaultLocaleName();
 
-void showNotify(const QString & title, const QString & text);
+void showNotify(const QString & title, const QString & text, const QString & apppack);
 
 // This function tries to find out some string which uniquely identifies this device.
 // If it's not available on the device it returns an empty string.
