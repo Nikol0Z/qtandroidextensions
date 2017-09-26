@@ -500,15 +500,12 @@ public class DesktopUtils
         try
         {
             Log.i(TAG, "Show Notify: "+text);
-
-
             if (m_notificationManager == null) {
                 m_notificationManager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
                 m_builder = new Notification.Builder(ctx);
                 int resource = DrawableResourceId(ctx, "icon");
                 m_builder.setSmallIcon(resource);
                 m_builder.setAutoCancel(true);
-                m_builder.setContentTitle(title);
                 Log.i(TAG, "Show Notify2: "+text);
  
                 if (apppack != ""){
@@ -530,7 +527,8 @@ public class DesktopUtils
                     PendingIntent pIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
                     m_builder.setContentIntent(pIntent);
                 }
-           }
+            }
+            m_builder.setContentTitle(title);
             m_builder.setContentText(text);
             m_notificationManager.notify(1, m_builder.build());
 
