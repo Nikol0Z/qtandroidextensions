@@ -69,11 +69,13 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
         }
     }
 
+    @Override
     public void onReceive(Context context, Intent intent) {
         Log.e(LOG_TAG, "Broadcast From GPS WSO2 MIRIADA");
         if (intent.hasExtra("location")) {
             Log.w(LOG_TAG, "Location here");
-            location = (Location) intent.getExtra("location");
+//            location = (Location) intent.getExtra("location");
+            location = (Location) intent.getParcelableExtra("location");
         }
         if (location == null) {
             Log.w(LOG_TAG, "Location not received");
