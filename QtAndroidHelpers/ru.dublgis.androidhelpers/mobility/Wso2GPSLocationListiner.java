@@ -81,7 +81,7 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
 	public synchronized boolean init() throws RemoteException {
         try
         {
-            Log.e(LOG_TAG, "Try Init scanner  ");
+            Log.e(LOG_TAG, "Try Init wso2 Listiner  ");
             /*
             iScanner = new ScanManager();
             if (iScanner != null) {
@@ -104,7 +104,7 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
             Log.e(LOG_TAG, "Exception while starting Wso2GPSLocationListiner: ", e);
             return false;
         }
-        return false;
+//        return false;
 	}
     private native void scannerInfoUpdate(long native_ptr, boolean code);
     private native Context getContext();
