@@ -88,7 +88,7 @@ QString QAndroidWso2GPSLocationDataProvider::result()
     return result;
 }
 
-QString QAndroidWso2GPSLocationDataProvider::lat()
+double QAndroidWso2GPSLocationDataProvider::lat()
 {
     double result;
 	if (isJniReady())
@@ -98,7 +98,7 @@ QString QAndroidWso2GPSLocationDataProvider::lat()
     return result;
 }
 
-QString QAndroidWso2GPSLocationDataProvider::lon()
+double QAndroidWso2GPSLocationDataProvider::lon()
 {
     double result;
 	if (isJniReady())
