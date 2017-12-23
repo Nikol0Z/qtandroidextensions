@@ -41,6 +41,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import ru.dublgis.androidhelpers.Log;
 import android.os.RemoteException;
+import android.location.Location;
 
 
 public class Wso2GPSLocationListiner extends BroadcastReceiver
@@ -69,6 +70,21 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
 
     public void onReceive(Context context, Intent intent) {
         Log.e(LOG_TAG, "Broadcast From GPS WSO2 MIRIADA");
+        if (intent.hasExtra("location")) {
+            Log.w(TAG, "Location here");
+            location = (Location) intent.getExtra("location");
+        }
+        if (location == null) {
+            Log.w(TAG, "Location not received");
+        } else {
+            if (IdentityProxy.getInstance().getContext() != null) {
+                OpenStreetMapService.getInstance().fetchReverseGeoCodes(location);
+            }
+                Log.d(TAG, "Location> Lat:" + location.getLatitude()
+                        + " Lon:" + location.getLongitude()
+                        + " Provider:" + location.getProvider());
+        }
+
         scannerInfoUpdate(native_ptr_, true);
     }
 
