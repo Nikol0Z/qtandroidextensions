@@ -41,9 +41,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import ru.dublgis.androidhelpers.Log;
 import android.os.RemoteException;
-import device.common.DecodeResult;
-import device.common.ScanConst;
-import device.sdk.ScanManager;
 
 
 public class Wso2GPSLocationListiner extends BroadcastReceiver
@@ -53,8 +50,6 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
     private static long native_ptr_ = 0;
     private boolean started_ = false;
 
-	private static ScanManager iScanner;
-	private static DecodeResult mDecodeResult;
     private static String result = "";
 
     public Wso2GPSLocationListiner(){
@@ -87,6 +82,7 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
         try
         {
             Log.e(LOG_TAG, "Try Init scanner  ");
+            /*
             iScanner = new ScanManager();
             if (iScanner != null) {
                 mDecodeResult = new DecodeResult();
@@ -97,8 +93,11 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
                 } catch (InterruptedException e) {
                 }
                 iScanner.aDecodeSetResultType(ScanConst.ResultType.DCD_RESULT_USERMSG);
+
                 return true;
 	        }
+            */
+                return true;
         }    
         catch (final Throwable e)
         {
