@@ -41,7 +41,7 @@
 namespace Mobility {
 
 
-Q_DECL_EXPORT void JNICALL Java_ScannerListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code)
+Q_DECL_EXPORT void JNICALL Java_Wso2GPSLocationListiner_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code)
 {
 	JNI_LINKER_OBJECT(Mobility::QAndroidWso2GPSLocationDataProvider, native_ptr, proxy)
 	proxy->scannerInfo(code);
@@ -50,7 +50,7 @@ Q_DECL_EXPORT void JNICALL Java_ScannerListener_scannerInfoUpdate(JNIEnv *, jobj
 
 static const JNINativeMethod methods[] = {
 	{"getContext", "()Landroid/content/Context;", (void*)QAndroidQPAPluginGap::getCurrentContext},
-	{"scannerInfoUpdate", "(JZ)V", (void*)Java_ScannerListener_scannerInfoUpdate},
+	{"scannerInfoUpdate", "(JZ)V", (void*)Java_Wso2GPSLocationListiner_scannerInfoUpdate},
 };
 
 
@@ -84,6 +84,26 @@ QString QAndroidWso2GPSLocationDataProvider::result()
 	if (isJniReady())
 	{
 		result = jni()->callString("result");
+	}
+    return result;
+}
+
+QString QAndroidWso2GPSLocationDataProvider::lat()
+{
+    double result;
+	if (isJniReady())
+	{
+		result = jni()->callString("lat");
+	}
+    return result;
+}
+
+QString QAndroidWso2GPSLocationDataProvider::lon()
+{
+    double result;
+	if (isJniReady())
+	{
+		result = jni()->callString("lon");
 	}
     return result;
 }
