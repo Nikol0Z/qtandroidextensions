@@ -93,7 +93,7 @@ double QAndroidWso2GPSLocationDataProvider::lat()
     double result;
 	if (isJniReady())
 	{
-		result = jni()->callString("lat");
+		result = jni()->callDouble("lat");
 	}
     return result;
 }
@@ -103,7 +103,7 @@ double QAndroidWso2GPSLocationDataProvider::lon()
     double result;
 	if (isJniReady())
 	{
-		result = jni()->callString("lon");
+		result = jni()->callDouble("lon");
 	}
     return result;
 }
