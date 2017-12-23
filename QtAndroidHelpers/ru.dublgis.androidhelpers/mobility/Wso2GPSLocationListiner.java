@@ -73,15 +73,8 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
     }
 
     public void onReceive(Context context, Intent intent) {
-        Log.e(LOG_TAG, "Broadcast ");
-        if (iScanner != null) {
-            iScanner.aDecodeGetResult(mDecodeResult.recycle());
-            Log.e(LOG_TAG, "Result QR!!!!!!!!!!!!!!!!!: "+ mDecodeResult.symName);
-           // Log.e(LOG_TAG, "Result QR!!!!!!!!!!!!!!!!!: "+ mDecodeResult.decodeValue);
-            //String s = new String("Polish");
-            result = new String(mDecodeResult.decodeValue);
-            scannerInfoUpdate(native_ptr_, true);
-        }
+        Log.e(LOG_TAG, "Broadcast From GPS WSO2 MIRIADA");
+        scannerInfoUpdate(native_ptr_, true);
     }
 
     //! Called from C++ to notify us that the associated C++ object is being destroyed.
