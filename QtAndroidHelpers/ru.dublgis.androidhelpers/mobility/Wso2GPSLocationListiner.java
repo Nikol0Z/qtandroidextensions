@@ -44,9 +44,9 @@ import android.os.RemoteException;
 import android.location.Location;
 
 
-public class Wso2GPSLocationListiner extends BroadcastReceiver
+public class Wso2GPSLocationListener extends BroadcastReceiver
 {
-    final private static String LOG_TAG = "Grym/Wso2GPSLocationListiner";
+    final private static String LOG_TAG = "Grym/Wso2GPSLocationListener";
     final private static boolean verbose_ = false;
     private static long native_ptr_ = 0;
     private boolean started_ = false;
@@ -54,10 +54,10 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
 
     private static String result = "";
 
-    public Wso2GPSLocationListiner(){
+    public Wso2GPSLocationListener(){
     }
 
-    public Wso2GPSLocationListiner(long native_ptr)
+    public Wso2GPSLocationListener(long native_ptr)
     {
         native_ptr_ = native_ptr;
     }
@@ -109,7 +109,7 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
 	public synchronized boolean init() throws RemoteException {
         try
         {
-            Log.e(LOG_TAG, "Try Init wso2 Listiner  ");
+            Log.e(LOG_TAG, "Try Init wso2 Listener  ");
             /*
             iScanner = new ScanManager();
             if (iScanner != null) {
@@ -129,7 +129,7 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
         }    
         catch (final Throwable e)
         {
-            Log.e(LOG_TAG, "Exception while starting Wso2GPSLocationListiner: ", e);
+            Log.e(LOG_TAG, "Exception while starting Wso2GPSLocationListener: ", e);
             return false;
         }
 //        return false;
@@ -137,4 +137,4 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
     private native void scannerInfoUpdate(long native_ptr, boolean code);
     private native Context getContext();
 
-} // class Wso2GPSLocationListiner
+} // class Wso2GPSLocationListener

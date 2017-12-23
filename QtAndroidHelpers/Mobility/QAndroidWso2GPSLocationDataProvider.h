@@ -55,7 +55,7 @@ public:
 	virtual ~QAndroidWso2GPSLocationDataProvider();
 
 private:
-	friend void JNICALL Java_Wso2GPSLocationListiner_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
+	friend void JNICALL Java_Wso2GPSLocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
 
 public slots:
 	bool init();
