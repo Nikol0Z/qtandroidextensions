@@ -50,6 +50,7 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
     final private static boolean verbose_ = false;
     private static long native_ptr_ = 0;
     private boolean started_ = false;
+    private static Location location;
 
     private static String result = "";
 
@@ -71,16 +72,13 @@ public class Wso2GPSLocationListiner extends BroadcastReceiver
     public void onReceive(Context context, Intent intent) {
         Log.e(LOG_TAG, "Broadcast From GPS WSO2 MIRIADA");
         if (intent.hasExtra("location")) {
-            Log.w(TAG, "Location here");
+            Log.w(LOG_TAG, "Location here");
             location = (Location) intent.getExtra("location");
         }
         if (location == null) {
-            Log.w(TAG, "Location not received");
+            Log.w(LOG_TAG, "Location not received");
         } else {
-            if (IdentityProxy.getInstance().getContext() != null) {
-                OpenStreetMapService.getInstance().fetchReverseGeoCodes(location);
-            }
-                Log.d(TAG, "Location> Lat:" + location.getLatitude()
+                Log.d(LOG_TAG, "Location> Lat:" + location.getLatitude()
                         + " Lon:" + location.getLongitude()
                         + " Provider:" + location.getProvider());
         }
