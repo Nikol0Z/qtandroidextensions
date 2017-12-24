@@ -56,7 +56,6 @@ static const JNINativeMethod methods[] = {
 
 JNI_LINKER_IMPL(QAndroidBatteryDataProvider, "ru/dublgis/androidhelpers/mobility/BatteryListener", methods)
 
-
 QAndroidBatteryDataProvider::QAndroidBatteryDataProvider(QObject * parent)
 	: QObject(parent)
 	, jniLinker_(new JniObjectLinker(this))

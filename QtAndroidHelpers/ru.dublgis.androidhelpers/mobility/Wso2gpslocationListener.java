@@ -39,9 +39,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import ru.dublgis.androidhelpers.Log;
 import android.os.RemoteException;
-import android.location.Location;
 
 
 public class Wso2gpslocationListener extends BroadcastReceiver
