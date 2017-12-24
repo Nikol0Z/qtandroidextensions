@@ -73,9 +73,14 @@ public class Wso2gpslocationListener extends BroadcastReceiver
             Log.d(LOG_TAG, "Location> Lat:" + location.getLatitude()
                         + " Lon:" + location.getLongitude()
                         + " Provider:" + location.getProvider());
-            locationInfoUpdate(native_ptr_, location.getLatitude(), location.getLongitude());
+            double altitude = -1;
+            float bearing = -1;
+            if (location.hasAltitude())
+                altitude = location.getAltitude();
+            if (location.hasBearing())
+                bearing = location.getBearing();
+            locationInfoUpdate(native_ptr_, location.getTime, location.getLatitude(), location.getLongitude(), altitude, bearing);
         }
-
     }
 
     //! Called from C++ to notify us that the associated C++ object is being destroyed.
@@ -122,7 +127,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         }
     }
 
-    private native void locationInfoUpdate(long native_ptr, double lat, double lon);
+    private native void locationInfoUpdate(long native_ptr, long time, double lat, double lon, double altitude, float bearing);
     private native Context getContext();
 
 } // class Wso2gpslocationListener
