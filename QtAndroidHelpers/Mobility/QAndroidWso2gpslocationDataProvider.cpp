@@ -40,7 +40,7 @@
 
 namespace Mobility {
 
-Q_DECL_EXPORT void JNICALL Java_Wso2gpslocationListener_locationInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jint time, jdouble lat, jdouble lon, jdouble altitude, jfloat bearing, jflaot speed)
+Q_DECL_EXPORT void JNICALL Java_Wso2gpslocationListener_locationInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jint time, jdouble lat, jdouble lon, jdouble altitude, jfloat bearing, jfloat speed)
 {
 	JNI_LINKER_OBJECT(Mobility::QAndroidWso2gpslocationDataProvider, native_ptr, proxy)
 	proxy->locationInfo(time, lat, lon, altitude, bearing, speed);
