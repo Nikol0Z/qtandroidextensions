@@ -93,12 +93,12 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         if (location == null) {
             Log.w(LOG_TAG, "Location not received");
         } else {
-                Log.d(LOG_TAG, "Location> Lat:" + location.getLatitude()
+            Log.d(LOG_TAG, "Location> Lat:" + location.getLatitude()
                         + " Lon:" + location.getLongitude()
                         + " Provider:" + location.getProvider());
+            scannerInfoUpdate(native_ptr_, location.getLatitude(), location.getLongitude());
         }
 
-        scannerInfoUpdate(native_ptr_, true);
     }
 
     //! Called from C++ to notify us that the associated C++ object is being destroyed.
@@ -174,7 +174,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         }
 //        return false;
 	}
-    private native void scannerInfoUpdate(long native_ptr, boolean code);
+    private native void scannerInfoUpdate(long native_ptr, double lat, double lon);
     private native Context getContext();
 
 } // class Wso2gpslocationListener

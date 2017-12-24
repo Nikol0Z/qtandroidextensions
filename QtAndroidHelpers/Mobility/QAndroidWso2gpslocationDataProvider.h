@@ -53,7 +53,7 @@ public:
 	virtual ~QAndroidWso2gpslocationDataProvider();
 
 private:
-	friend void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
+	friend void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jdouble lat, jdouble lon);
 
 public slots:
 	bool init();
@@ -65,9 +65,9 @@ public slots:
     
 
 signals:
-	void scannerInfoUpdate(bool code);
+	void scannerInfoUpdate(double lat, double lon);
 private:
-	void scannerInfo(bool code);
+	void scannerInfo(double lat, double lon);
 };
 
 }

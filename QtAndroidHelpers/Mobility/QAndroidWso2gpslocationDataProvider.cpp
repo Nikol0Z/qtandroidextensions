@@ -40,15 +40,15 @@
 
 namespace Mobility {
 
-Q_DECL_EXPORT void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code)
+Q_DECL_EXPORT void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jdouble lat, jdouble lon)
 {
 	JNI_LINKER_OBJECT(Mobility::QAndroidWso2gpslocationDataProvider, native_ptr, proxy)
-	proxy->scannerInfo(code);
+	proxy->scannerInfo(lat, lon);
 }
 
 static const JNINativeMethod methods[] = {
 	{"getContext", "()Landroid/content/Context;", (void*)QAndroidQPAPluginGap::getCurrentContext},
-	{"scannerInfoUpdate", "(JZ)V", (void*)Java_Wso2gpslocationListener_scannerInfoUpdate},
+	{"scannerInfoUpdate", "(JDD)V", (void*)Java_Wso2gpslocationListener_scannerInfoUpdate},
 };
 
 
@@ -124,9 +124,9 @@ double QAndroidWso2gpslocationDataProvider::lon()
 }
 
 
-void QAndroidWso2gpslocationDataProvider::scannerInfo(bool code)
+void QAndroidWso2gpslocationDataProvider::scannerInfo(double lat, double lon)
 {
-    emit scannerInfoUpdate(code);
+    emit scannerInfoUpdate(lat, lon);
 }
 
 }
