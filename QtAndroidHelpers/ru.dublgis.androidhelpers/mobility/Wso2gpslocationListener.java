@@ -104,16 +104,15 @@ public class Wso2gpslocationListener extends BroadcastReceiver
             if (!started_) {
                 ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
                 for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-
                     Log.d(LOG_TAG, "Wso2gpslocationListener service " + service.service.getClassName());
-//                    if (serviceClass.getName().equals(service.service.getClassName())) {
-                //        return true;
-//                    }
+                    if (service.service.getClassName().equals("org.wso2.iot.agent.services.location.LocationService")) {
+                        getContext().registerReceiver(this, new IntentFilter("org.ws2.iot.agent.LOCATION_UPDATE"));
+                        started_ = true;
+                        return true;
+                    }
                 }
-                //return false;
+                return false;
 
-                getContext().registerReceiver(this, new IntentFilter("org.ws2.iot.agent.LOCATION_UPDATE"));
-                started_ = true;
             } else {
                 Log.d(LOG_TAG, "Wso2gpslocationListener start: already started!");
             }
