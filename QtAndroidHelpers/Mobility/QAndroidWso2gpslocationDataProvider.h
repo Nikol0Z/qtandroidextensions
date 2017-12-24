@@ -43,19 +43,17 @@
 
 namespace Mobility {
 
-//void preloadJavaClasses();
-
-class QAndroidWso2GPSLocationDataProvider : public QObject
+class QAndroidWso2gpslocationDataProvider : public QObject
 {
 	Q_OBJECT
-	JNI_LINKER_DECL(QAndroidWso2GPSLocationDataProvider)
+	JNI_LINKER_DECL(QAndroidWso2gpslocationDataProvider)
 
 public:
-	QAndroidWso2GPSLocationDataProvider(QObject * parent = 0);
-	virtual ~QAndroidWso2GPSLocationDataProvider();
+	QAndroidWso2gpslocationDataProvider(QObject * parent = 0);
+	virtual ~QAndroidWso2gpslocationDataProvider();
 
 private:
-	friend void JNICALL Java_Wso2GPSLocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
+	friend void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
 
 public slots:
 	bool init();
@@ -65,9 +63,7 @@ public slots:
     
 
 signals:
-//	void scannerInfoUpdate(QString code);
 	void scannerInfoUpdate(bool code);
-//	void scannerInfoUpdate(jstring code);
 private:
 	void scannerInfo(bool code);
 };

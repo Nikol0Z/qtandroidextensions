@@ -33,42 +33,41 @@
 	THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "QAndroidWso2GPSLocationDataProvider.h"
+#include "QAndroidWso2gpslocationDataProvider.h"
 #include <QAndroidQPAPluginGap.h>
 #include "TJniObjectLinker.h"
 
 
 namespace Mobility {
 
-
-Q_DECL_EXPORT void JNICALL Java_Wso2GPSLocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code)
+Q_DECL_EXPORT void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code)
 {
-	JNI_LINKER_OBJECT(Mobility::QAndroidWso2GPSLocationDataProvider, native_ptr, proxy)
+	JNI_LINKER_OBJECT(Mobility::QAndroidWso2gpslocationDataProvider, native_ptr, proxy)
 	proxy->scannerInfo(code);
 }
 
 
 static const JNINativeMethod methods[] = {
 	{"getContext", "()Landroid/content/Context;", (void*)QAndroidQPAPluginGap::getCurrentContext},
-	{"scannerInfoUpdate", "(JZ)V", (void*)Java_Wso2GPSLocationListener_scannerInfoUpdate},
+	{"scannerInfoUpdate", "(JZ)V", (void*)Java_Wso2gpslocationListener_scannerInfoUpdate},
 };
 
 
-JNI_LINKER_IMPL(QAndroidWso2GPSLocationDataProvider, "ru/dublgis/androidhelpers/mobility/Wso2GPSLocationListener", methods)
+JNI_LINKER_IMPL(QAndroidWso2gpslocationDataProvider, "ru/dublgis/androidhelpers/mobility/Wso2gpslocationListener", methods)
 
-QAndroidWso2GPSLocationDataProvider::QAndroidWso2GPSLocationDataProvider(QObject * parent)
+QAndroidWso2gpslocationDataProvider::QAndroidWso2gpslocationDataProvider(QObject * parent)
 	: QObject(parent)
 	, jniLinker_(new JniObjectLinker(this))
 {
 }
 
 
-QAndroidWso2GPSLocationDataProvider::~QAndroidWso2GPSLocationDataProvider()
+QAndroidWso2gpslocationDataProvider::~QAndroidWso2gpslocationDataProvider()
 {
 }
 
 
-bool QAndroidWso2GPSLocationDataProvider::init()
+bool QAndroidWso2gpslocationDataProvider::init()
 {
     bool result = false;
 	if (isJniReady())
@@ -78,7 +77,7 @@ bool QAndroidWso2GPSLocationDataProvider::init()
     return result;
 }
 
-QString QAndroidWso2GPSLocationDataProvider::result()
+QString QAndroidWso2gpslocationDataProvider::result()
 {
     QString result;
 	if (isJniReady())
@@ -88,7 +87,7 @@ QString QAndroidWso2GPSLocationDataProvider::result()
     return result;
 }
 
-double QAndroidWso2GPSLocationDataProvider::lat()
+double QAndroidWso2gpslocationDataProvider::lat()
 {
     double result;
 	if (isJniReady())
@@ -98,7 +97,7 @@ double QAndroidWso2GPSLocationDataProvider::lat()
     return result;
 }
 
-double QAndroidWso2GPSLocationDataProvider::lon()
+double QAndroidWso2gpslocationDataProvider::lon()
 {
     double result;
 	if (isJniReady())
@@ -109,7 +108,7 @@ double QAndroidWso2GPSLocationDataProvider::lon()
 }
 
 
-void QAndroidWso2GPSLocationDataProvider::scannerInfo(bool code)
+void QAndroidWso2gpslocationDataProvider::scannerInfo(bool code)
 {
     emit scannerInfoUpdate(code);
 }
