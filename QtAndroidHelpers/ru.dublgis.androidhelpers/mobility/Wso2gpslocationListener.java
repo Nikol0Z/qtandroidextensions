@@ -105,7 +105,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
                 ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
                 for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 
-                    Log.d(LOG_TAG, "Wso2gpslocationListener service ", serviceClass.getName());
+                    Log.d(LOG_TAG, "Wso2gpslocationListener service ", service.service.getClassName());
 //                    if (serviceClass.getName().equals(service.service.getClassName())) {
                 //        return true;
 //                    }
