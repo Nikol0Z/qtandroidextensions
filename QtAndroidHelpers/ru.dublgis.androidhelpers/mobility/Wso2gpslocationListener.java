@@ -72,7 +72,9 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         } else {
             Log.d(LOG_TAG, "Location> Lat:" + location.getLatitude()
                         + " Lon:" + location.getLongitude()
-                        + " Provider:" + location.getProvider());
+                        + " Provider:" + location.getProvider()
+                        + " Time:" + location.getTime()
+                        );
             double altitude = -1;
             float bearing = -1;
             if (location.hasAltitude())
