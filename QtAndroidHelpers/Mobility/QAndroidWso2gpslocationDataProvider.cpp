@@ -43,7 +43,7 @@ namespace Mobility {
 Q_DECL_EXPORT void JNICALL Java_Wso2gpslocationListener_locationInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jdouble lat, jdouble lon)
 {
 	JNI_LINKER_OBJECT(Mobility::QAndroidWso2gpslocationDataProvider, native_ptr, proxy)
-	proxy->scannerInfo(lat, lon);
+	proxy->locationInfo(lat, lon);
 }
 
 static const JNINativeMethod methods[] = {
@@ -79,7 +79,7 @@ void QAndroidWso2gpslocationDataProvider::stop()
 	}
 }
 
-void QAndroidWso2gpslocationDataProvider::scannerInfo(double lat, double lon)
+void QAndroidWso2gpslocationDataProvider::locationInfo(double lat, double lon)
 {
     emit locationInfoUpdate(lat, lon);
 }
