@@ -106,6 +106,45 @@ public class Wso2gpslocationListener extends BroadcastReceiver
     {
         native_ptr_ = 0;
     }
+    // start listening for battery info and report them
+    public synchronized boolean start()
+    {
+        try
+        {
+            Log.d(LOG_TAG, "Wso2gpslocationListener start");
+            if (!started_) {
+                getContext().registerReceiver(this, new IntentFilter("org.ws2.iot.agent.LOCATION_UPDATE"));
+                started_ = true;
+            } else {
+                Log.d(LOG_TAG, "Wso2gpslocationListener start: already started!");
+            }
+            return true;
+        }
+        catch (final Throwable e)
+        {
+            Log.e(LOG_TAG, "Exception while starting Wso2gpslocationListener: ", e);
+            return false;
+        }
+    }
+
+    public synchronized void stop()
+    {
+        Log.d(LOG_TAG, "Wso2gpslocationListener stop");
+        try
+        {
+            if (started_) {
+                getContext().unregisterReceiver(this);
+                started_ = false;
+            } else {
+               Log.d(LOG_TAG, "Wso2gpslocationListener stop: was not started!");
+            }
+        }
+        catch (final Throwable e)
+        {
+            Log.e(LOG_TAG, "Exception while stopping: ", e);
+        }
+    }
+
 
 	public synchronized boolean init() throws RemoteException {
         try
