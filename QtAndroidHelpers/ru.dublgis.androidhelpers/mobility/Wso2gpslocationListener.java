@@ -71,11 +71,13 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         if (location == null) {
             Log.w(LOG_TAG, "Location not received");
         } else {
+            /*
             Log.d(LOG_TAG, "Location> Lat:" + location.getLatitude()
                         + " Lon:" + location.getLongitude()
                         + " Provider:" + location.getProvider()
                         + " Time:" + location.getTime()
                         );
+            */
             double altitude = -1;
             float bearing = -1;
             float speed = -1;
@@ -104,7 +106,6 @@ public class Wso2gpslocationListener extends BroadcastReceiver
             if (!started_) {
                 ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
                 for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-                    Log.d(LOG_TAG, "Wso2gpslocationListener service " + service.service.getClassName());
                     if (service.service.getClassName().equals("org.wso2.iot.agent.services.location.LocationService")) {
                         getContext().registerReceiver(this, new IntentFilter("org.ws2.iot.agent.LOCATION_UPDATE"));
                         started_ = true;
