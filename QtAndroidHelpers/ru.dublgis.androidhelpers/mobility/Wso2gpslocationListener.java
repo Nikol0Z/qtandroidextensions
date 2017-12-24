@@ -81,7 +81,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
                 altitude = location.getAltitude();
             if (location.hasBearing())
                 bearing = location.getBearing();
-            locationInfoUpdate(native_ptr_, location.getTime()/1000, location.getLatitude(), location.getLongitude(), altitude, bearing);
+            locationInfoUpdate(native_ptr_, (int)(location.getTime()/1000), location.getLatitude(), location.getLongitude(), altitude, bearing);
         }
     }
 
