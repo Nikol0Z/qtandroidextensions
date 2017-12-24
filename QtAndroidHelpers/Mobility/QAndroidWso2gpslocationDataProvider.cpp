@@ -48,7 +48,7 @@ Q_DECL_EXPORT void JNICALL Java_Wso2gpslocationListener_locationInfoUpdate(JNIEn
 
 static const JNINativeMethod methods[] = {
 	{"getContext", "()Landroid/content/Context;", (void*)QAndroidQPAPluginGap::getCurrentContext},
-	{"locationInfoUpdate", "(JLDDDF)V", (void*)Java_Wso2gpslocationListener_locationInfoUpdate},
+	{"locationInfoUpdate", "(JJDDDF)V", (void*)Java_Wso2gpslocationListener_locationInfoUpdate},
 };
 
 JNI_LINKER_IMPL(QAndroidWso2gpslocationDataProvider, "ru/dublgis/androidhelpers/mobility/Wso2gpslocationListener", methods)
