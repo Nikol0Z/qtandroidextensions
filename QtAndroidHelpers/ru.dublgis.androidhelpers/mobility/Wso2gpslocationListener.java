@@ -54,10 +54,10 @@ public class Wso2gpslocationListener extends BroadcastReceiver
     private static Location location;
 
     private static String result = "";
-/*
+
     public Wso2gpslocationListener(){
     }
-*/
+
     public Wso2gpslocationListener(long native_ptr)
     {
         native_ptr_ = native_ptr;
