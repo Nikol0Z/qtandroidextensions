@@ -42,6 +42,7 @@ import android.content.IntentFilter;
 import android.location.Location;
 import ru.dublgis.androidhelpers.Log;
 import android.os.RemoteException;
+import android.app.ActivityManager;
 
 
 public class Wso2gpslocationListener extends BroadcastReceiver
@@ -101,6 +102,16 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         {
             Log.d(LOG_TAG, "Wso2gpslocationListener start");
             if (!started_) {
+                ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+
+                    Log.d(LOG_TAG, "Wso2gpslocationListener service ", serviceClass.getName());
+//                    if (serviceClass.getName().equals(service.service.getClassName())) {
+                //        return true;
+//                    }
+                }
+                //return false;
+
                 getContext().registerReceiver(this, new IntentFilter("org.ws2.iot.agent.LOCATION_UPDATE"));
                 started_ = true;
             } else {
