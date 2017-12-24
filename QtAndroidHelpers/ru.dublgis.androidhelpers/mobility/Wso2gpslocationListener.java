@@ -81,7 +81,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
                 altitude = location.getAltitude();
             if (location.hasBearing())
                 bearing = location.getBearing();
-            locationInfoUpdate(native_ptr_, location.getTime(), location.getLatitude(), location.getLongitude(), altitude, bearing);
+            locationInfoUpdate(native_ptr_, location.getTime()/1000, location.getLatitude(), location.getLongitude(), altitude, bearing);
         }
     }
 
@@ -129,7 +129,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         }
     }
 
-    private native void locationInfoUpdate(long native_ptr, long time, double lat, double lon, double altitude, float bearing);
+    private native void locationInfoUpdate(long native_ptr, int time, double lat, double lon, double altitude, float bearing);
     private native Context getContext();
 
 } // class Wso2gpslocationListener
