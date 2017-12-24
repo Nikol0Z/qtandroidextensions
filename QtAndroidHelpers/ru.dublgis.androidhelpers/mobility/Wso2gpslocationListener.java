@@ -133,7 +133,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         }
     }
 
-    private native void locationInfoUpdate(long native_ptr, int time, double lat, double lon, double altitude, float bearing, speed);
+    private native void locationInfoUpdate(long native_ptr, int time, double lat, double lon, double altitude, float bearing, float speed);
     private native Context getContext();
 
 } // class Wso2gpslocationListener
