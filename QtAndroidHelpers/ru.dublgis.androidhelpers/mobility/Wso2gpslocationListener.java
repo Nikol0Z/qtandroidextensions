@@ -85,7 +85,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
             if (location.hasSpeed())
                 speed = location.getSpeed();
  
-            locationInfoUpdate(native_ptr_, (int)(location.getTime()/1000), location.getLatitude(), location.getLongitude(), altitude, bearing);
+            locationInfoUpdate(native_ptr_, (int)(location.getTime()/1000), location.getLatitude(), location.getLongitude(), altitude, bearing, speed);
         }
     }
 
@@ -133,7 +133,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         }
     }
 
-    private native void locationInfoUpdate(long native_ptr, int time, double lat, double lon, double altitude, float bearing);
+    private native void locationInfoUpdate(long native_ptr, int time, double lat, double lon, double altitude, float bearing, speed);
     private native Context getContext();
 
 } // class Wso2gpslocationListener
