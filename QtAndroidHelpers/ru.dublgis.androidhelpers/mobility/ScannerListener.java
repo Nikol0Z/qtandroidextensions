@@ -57,10 +57,10 @@ public class ScannerListener extends BroadcastReceiver
 	private static ScanManager iScanner;
 	private static DecodeResult mDecodeResult;
     private static String result = "";
-/*
+
     public ScannerListener(){
     }
-*/
+
     public ScannerListener(long native_ptr)
     {
         native_ptr_ = native_ptr;

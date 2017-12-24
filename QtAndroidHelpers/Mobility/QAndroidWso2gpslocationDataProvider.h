@@ -54,6 +54,7 @@ public:
 
 private:
 	friend void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
+	friend void JNICALL Java_ru_dublgis_androidhelpers_mobility_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jboolean code);
 
 public slots:
 	bool init();
