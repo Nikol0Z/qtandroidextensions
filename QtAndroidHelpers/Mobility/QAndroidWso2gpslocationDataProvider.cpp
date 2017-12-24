@@ -63,12 +63,13 @@ QAndroidWso2gpslocationDataProvider::~QAndroidWso2gpslocationDataProvider()
 {
 }
 
-void QAndroidWso2gpslocationDataProvider::start()
+bool QAndroidWso2gpslocationDataProvider::start()
 {
 	if (isJniReady())
 	{
-		jni()->callBool("start");
+	    return	jni()->callBool("start");
 	}
+    return false;
 }
 
 void QAndroidWso2gpslocationDataProvider::stop()
