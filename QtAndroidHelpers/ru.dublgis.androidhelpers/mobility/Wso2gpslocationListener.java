@@ -73,7 +73,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
             Log.d(LOG_TAG, "Location> Lat:" + location.getLatitude()
                         + " Lon:" + location.getLongitude()
                         + " Provider:" + location.getProvider());
-            scannerInfoUpdate(native_ptr_, location.getLatitude(), location.getLongitude());
+            locationInfoUpdate(native_ptr_, location.getLatitude(), location.getLongitude());
         }
 
     }
@@ -122,7 +122,7 @@ public class Wso2gpslocationListener extends BroadcastReceiver
         }
     }
 
-    private native void scannerInfoUpdate(long native_ptr, double lat, double lon);
+    private native void locationInfoUpdate(long native_ptr, double lat, double lon);
     private native Context getContext();
 
 } // class Wso2gpslocationListener
