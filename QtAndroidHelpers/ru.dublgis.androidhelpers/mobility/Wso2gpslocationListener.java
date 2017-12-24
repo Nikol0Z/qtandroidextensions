@@ -77,10 +77,14 @@ public class Wso2gpslocationListener extends BroadcastReceiver
                         );
             double altitude = -1;
             float bearing = -1;
+            float speed = -1;
             if (location.hasAltitude())
                 altitude = location.getAltitude();
             if (location.hasBearing())
                 bearing = location.getBearing();
+            if (location.hasSpeed())
+                speed = location.getSpeed();
+ 
             locationInfoUpdate(native_ptr_, (int)(location.getTime()/1000), location.getLatitude(), location.getLongitude(), altitude, bearing);
         }
     }

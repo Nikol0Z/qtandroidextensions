@@ -53,15 +53,15 @@ public:
 	virtual ~QAndroidWso2gpslocationDataProvider();
 
 private:
-	friend void JNICALL Java_Wso2gpslocationListener_locationInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jint time, jdouble lat, jdouble lon, jdouble altitude, jfloat bearing);
+	friend void JNICALL Java_Wso2gpslocationListener_locationInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jint time, jdouble lat, jdouble lon, jdouble altitude, jfloat bearing, jfloat speed);
 
 public slots:
 	void start();
 	void stop();
 signals:
-	void locationInfoUpdate(int time, double lat, double lon, double altitude, float bearing);
+	void locationInfoUpdate(int time, double lat, double lon, double altitude, float bearing, float speed);
 private:
-	void locationInfo(int time, double lat, double lon, double altitude, float bearing);
+	void locationInfo(int time, double lat, double lon, double altitude, float bearing, float speed);
 };
 
 }
