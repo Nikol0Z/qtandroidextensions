@@ -51,7 +51,6 @@ static const JNINativeMethod methods[] = {
 	{"scannerInfoUpdate", "(JDD)V", (void*)Java_Wso2gpslocationListener_scannerInfoUpdate},
 };
 
-
 JNI_LINKER_IMPL(QAndroidWso2gpslocationDataProvider, "ru/dublgis/androidhelpers/mobility/Wso2gpslocationListener", methods)
 
 QAndroidWso2gpslocationDataProvider::QAndroidWso2gpslocationDataProvider(QObject * parent)
@@ -60,11 +59,9 @@ QAndroidWso2gpslocationDataProvider::QAndroidWso2gpslocationDataProvider(QObject
 {
 }
 
-
 QAndroidWso2gpslocationDataProvider::~QAndroidWso2gpslocationDataProvider()
 {
 }
-
 
 void QAndroidWso2gpslocationDataProvider::start()
 {
@@ -74,7 +71,6 @@ void QAndroidWso2gpslocationDataProvider::start()
 	}
 }
 
-
 void QAndroidWso2gpslocationDataProvider::stop()
 {
 	if (isJniReady())
@@ -82,47 +78,6 @@ void QAndroidWso2gpslocationDataProvider::stop()
 		jni()->callVoid("stop");
 	}
 }
-
-bool QAndroidWso2gpslocationDataProvider::init()
-{
-    bool result = false;
-	if (isJniReady())
-	{
-		result = jni()->callBool("init");
-	}
-    return result;
-}
-
-QString QAndroidWso2gpslocationDataProvider::result()
-{
-    QString result;
-	if (isJniReady())
-	{
-		result = jni()->callString("result");
-	}
-    return result;
-}
-
-double QAndroidWso2gpslocationDataProvider::lat()
-{
-    double result;
-	if (isJniReady())
-	{
-		result = jni()->callDouble("lat");
-	}
-    return result;
-}
-
-double QAndroidWso2gpslocationDataProvider::lon()
-{
-    double result;
-	if (isJniReady())
-	{
-		result = jni()->callDouble("lon");
-	}
-    return result;
-}
-
 
 void QAndroidWso2gpslocationDataProvider::scannerInfo(double lat, double lon)
 {

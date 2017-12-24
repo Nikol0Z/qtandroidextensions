@@ -56,14 +56,8 @@ private:
 	friend void JNICALL Java_Wso2gpslocationListener_scannerInfoUpdate(JNIEnv *, jobject, jlong native_ptr, jdouble lat, jdouble lon);
 
 public slots:
-	bool init();
 	void start();
 	void stop();
-    QString result();
-    double  lat();
-    double  lon();
-    
-
 signals:
 	void scannerInfoUpdate(double lat, double lon);
 private:
