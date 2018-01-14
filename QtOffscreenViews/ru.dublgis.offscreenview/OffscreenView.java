@@ -64,7 +64,7 @@ import android.graphics.Color;
 /*!
  * A base class for all Android off-screen views which implements any common interfaces and functionality.
  */
-abstract class OffscreenView
+public abstract class OffscreenView
 {
     public static final String TAG = "Grym/OffscreenView";
 
@@ -165,7 +165,7 @@ abstract class OffscreenView
         }
     }
 
-    OffscreenView()
+    public OffscreenView()
     {
        // Log.i(TAG, "OffscreenView constructor");
     }
@@ -734,7 +734,7 @@ abstract class OffscreenView
             // with black screen.
             if (!last_visibility_)
             {
-                //Log.i(TAG, "doDrawViewOnTexture: skipping paint for invisible view: " + object_name_);
+                // Log.v(TAG, "doDrawViewOnTexture: skipping paint for invisible view: " + object_name_);
                 return false;
             }
 
@@ -1146,7 +1146,7 @@ abstract class OffscreenView
         return getView() != null;
     }
 
-    final long getNativePtr()
+    public final long getNativePtr()
     {
         return native_ptr_;
     }

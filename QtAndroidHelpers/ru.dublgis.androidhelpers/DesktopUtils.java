@@ -99,9 +99,9 @@ public class DesktopUtils
                 return 1;
             return 0;
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "IsInternetActive exception: "+e);
+            Log.e(TAG, "IsInternetActive exception: ", e);
         }
         return -1;
     }
@@ -122,9 +122,9 @@ public class DesktopUtils
                 return -1;
             return netinfo.getType();
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "GetNetworkType exception: "+e);
+            Log.e(TAG, "GetNetworkType exception: ", e);
         }
         return -1;
     }
@@ -161,9 +161,9 @@ public class DesktopUtils
             ctx.startActivity(chooser);
             return true;
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "sendTo exception: "+e);
+            Log.e(TAG, "sendTo exception: ", e);
             return false;
         }
     }
@@ -184,9 +184,9 @@ public class DesktopUtils
             ctx.startActivity(intent);
             return true;
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "sendSMS exception: "+e);
+            Log.e(TAG, "sendSMS exception: ", e);
             return false;
         }
     }
@@ -241,7 +241,9 @@ public class DesktopUtils
             i.putExtra(Intent.EXTRA_EMAIL, recipients);
             i.putExtra(Intent.EXTRA_SUBJECT, subject);
             i.putExtra(Intent.EXTRA_TEXT, body);
-            if (attach_file != null && attach_file.length() > 0) {
+
+            Uri workaround_grant_permission_for_uri = null;
+            if (attach_file != null && !attach_file.isEmpty()) {
                 if (!force_content_provider && android.os.Build.VERSION.SDK_INT < 23) {
                     i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(attach_file)));
                 } else {
@@ -249,16 +251,30 @@ public class DesktopUtils
                     // For more information, please see:
                     // http://stackoverflow.com/questions/32981194/android-6-cannot-share-files-anymore
                     i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
-                            ctx,
-                            authorities,
-                            new File(attach_file)));
+                    workaround_grant_permission_for_uri = FileProvider.getUriForFile(
+                        ctx,
+                        authorities,
+                        new File(attach_file));
+                    i.putExtra(Intent.EXTRA_STREAM, workaround_grant_permission_for_uri);
                 }
             }
 
             for (ResolveInfo resolveInfo : resolveInfos) {
                 String packageName = resolveInfo.activityInfo.packageName;
                 String name = resolveInfo.activityInfo.name;
+
+                // Some mail clients will not read the URI unless this is done.
+                // See here: https://stackoverflow.com/questions/24467696/android-file-provider-permission-denial
+                if (workaround_grant_permission_for_uri != null) {
+                    try {
+                        ctx.grantUriPermission(
+                            packageName
+                            , workaround_grant_permission_for_uri
+                            , Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (final Throwable e) {
+                        Log.e(TAG, "grantUriPermission error: ", e);
+                    }
+                }
 
                 Intent fakeIntent = (Intent)i.clone();
                 fakeIntent.setComponent(new ComponentName(packageName, name));
@@ -287,9 +303,9 @@ public class DesktopUtils
             */
             return true;
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "sendEmail exception: "+e);
+            Log.e(TAG, "sendEmail exception: ", e);
             return false;
         }
     }
@@ -307,9 +323,9 @@ public class DesktopUtils
             intent.putExtra(Intent.EXTRA_SUBJECT, subject);
             intent.putExtra(Intent.EXTRA_TEXT, body);
 
+            boolean grant_permissions_workaround = false;
+            final ArrayList<Uri> uri = new ArrayList<>();
             if (attachment.length > 0) {
-                final ArrayList<Uri> uri = new ArrayList<>();
-
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                     for (final String fileName: attachment) {
                         uri.add(Uri.fromFile(new File(fileName)));
@@ -319,7 +335,7 @@ public class DesktopUtils
                     // For more information, please see:
                     // http://stackoverflow.com/questions/32981194/android-6-cannot-share-files-anymore
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
+                    grant_permissions_workaround = true;
                     for (final String fileName: attachment) {
                         uri.add(FileProvider.getUriForFile(ctx, authorities, new File(fileName)));
                     }
@@ -348,6 +364,21 @@ public class DesktopUtils
                     final String packageName = activityInfo.getPackageName();
                     final String name = activityInfo.getName();
 
+                    // Some mail clients will not read the URI unless this is done.
+                    // See here: https://stackoverflow.com/questions/24467696/android-file-provider-permission-denial
+                    if (grant_permissions_workaround) {
+                        for (int i = 0; i < uri.size(); ++i) {
+                            try {
+                                ctx.grantUriPermission(
+                                   packageName
+                                   , uri.get(i)
+                                   , Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            } catch (final Throwable e) {
+                                Log.e(TAG, "grantUriPermission error: ", e);
+                            }
+                        }
+                    }
+
                     final Intent cloneIntent = (Intent) intent.clone();
                     cloneIntent.setComponent(new ComponentName(packageName, name));
                     intentList.add(cloneIntent);
@@ -373,7 +404,7 @@ public class DesktopUtils
             */
             return true;
         }
-        catch (Exception exception)
+        catch (final Throwable exception)
         {
             Log.e(TAG, "sendEmail exception: ", exception);
             return false;
@@ -403,9 +434,9 @@ public class DesktopUtils
             ctx.startActivity(i);
             return true;
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "openURL exception: "+e);
+            Log.e(TAG, "openURL exception: ", e);
             return false;
         }
     }
@@ -423,9 +454,9 @@ public class DesktopUtils
             ctx.startActivity(intent);
             return true;
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "Exception while opening a file: "+e);
+            Log.e(TAG, "Exception while opening a file: ", e);
             return false;
         }
     }
@@ -443,9 +474,9 @@ public class DesktopUtils
             Log.i(TAG, "Installation intent started successfully.");
             return true;
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "Exception while installing apk: "+e);
+            Log.e(TAG, "Exception while installing apk: ", e);
             return false;
         }
     }
@@ -462,28 +493,67 @@ public class DesktopUtils
             ctx.startActivity(intent);
             Log.i(TAG, "Uninstallation intent started successfully.");
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "Exception while uninstalling package: "+e);
+            Log.e(TAG, "Exception while uninstalling package: ", e);
         }
     }
 
-    // 'number' is an RFC-3966 URI without 'tel:'.
-    // See: http://tools.ietf.org/html/rfc3966
-    public static boolean callNumber(final Context ctx, final String number)
+
+    // See: https://stackoverflow.com/questions/5196833/android-device-phone-call-ability
+    public static boolean isVoiceTelephonyAvailable(final Context ctx)
     {
         try
         {
-            Log.i(TAG, "Will call number: "+number);
-            Intent i = new Intent(Intent.ACTION_VIEW);
+            if (!ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY))
+            {
+                return false;
+            }
+            final TelephonyManager manager = (TelephonyManager)ctx.getSystemService(Context.TELEPHONY_SERVICE);
+            if (manager == null)
+            {
+                return false;
+            }
+            if (manager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE)
+            {
+                return false;
+            }
+            if (Build.VERSION.SDK_INT >= 22) // Android 5.1+
+            {
+                if (!manager.isVoiceCapable())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        catch (final Throwable e)
+        {
+            Log.e(TAG, "isVoiceTelephonyAvailable exception (will return 'false'): ", e);
+            return false;
+        }
+    }
+
+
+    // 'number' is an RFC-3966 URI without 'tel:'.
+    // If 'action' is null or empty string it defaults to Intent.ACTION_VIEW.
+    // See: http://tools.ietf.org/html/rfc3966
+    public static boolean callNumber(final Context ctx, final String number, final String action)
+    {
+        try
+        {
+            Log.i(TAG, "Will call number: " + number);
+            final String doAction = (action == null || action.isEmpty()) ? Intent.ACTION_VIEW : action;
+            final String doPhone = (number.startsWith("tel:")) ? number: "tel:" + number;
+            final Intent i = new Intent(doAction);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.setData(Uri.parse("tel:"+number));
+            i.setData(Uri.parse(doPhone));
             ctx.startActivity(i);
             return true;
         }
-        catch(Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "callNumber exception: "+e);
+            Log.e(TAG, "callNumber exception: ", e);
             return false;
         }
     }
@@ -553,9 +623,9 @@ public class DesktopUtils
             }
             return tm.getDeviceId();
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "getTelephonyDeviceId exception: "+e);
+            Log.e(TAG, "getTelephonyDeviceId exception: ", e);
             return "";
         }
     }
@@ -631,7 +701,7 @@ public class DesktopUtils
         {
             return ctx.getResources().getConfiguration().locale.getDisplayCountry();
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
             Log.e(TAG, "getDisplayCountry exception: " + e);
             return "";
@@ -644,7 +714,7 @@ public class DesktopUtils
         {
             return ctx.getResources().getConfiguration().locale.getCountry();
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
             Log.e(TAG, "getCountry exception: " + e);
             return "";
@@ -663,9 +733,9 @@ public class DesktopUtils
                 return androidId;
             }
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "getAndroidId exception: "+e);
+            Log.e(TAG, "getAndroidId exception: ", e);
         }
         return "";
     }
@@ -682,7 +752,7 @@ public class DesktopUtils
        }
        catch (final Throwable e)
        {
-           Log.e(TAG, "getBuildSerial exception: "+e);
+           Log.e(TAG, "getBuildSerial exception: ", e);
        }
        return "";
     }
@@ -700,9 +770,9 @@ public class DesktopUtils
             }
             return result; 
         }
-        catch (Exception e)
+        catch (final Throwable e)
         {
-            Log.e(TAG, "getInstalledAppsList exception: "+e);
+            Log.e(TAG, "getInstalledAppsList exception: ", e);
         }
         return "";
     }

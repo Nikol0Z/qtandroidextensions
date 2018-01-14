@@ -38,51 +38,71 @@
 #include "QAndroidDisplayMetrics.h"
 #include "QAndroidScreenOrientation.h"
 
+
 namespace QAndroidScreenOrientation {
+
 
 int getRequestedOrientation()
 {
-	QAndroidQPAPluginGap::Context activity;
-	jint result = activity.callInt("getRequestedOrientation");
-	// qDebug()<<"QAndroidScreenOrientation::getRequestedOrientation"<<result;
-	return int(result);
+	try
+	{
+		QAndroidQPAPluginGap::Context activity;
+		jint result = activity.callInt("getRequestedOrientation");
+		// qDebug()<<"QAndroidScreenOrientation::getRequestedOrientation"<<result;
+		return int(result);
+	}
+	catch (const std::exception & e)
+	{
+		qWarning() << "JNI exception in getRequestedOrientation:" << e.what();
+		return ANDROID_ACTIVITYINFO_SCREEN_ORIENTATION_UNSPECIFIED;
+	}
 }
+
 
 void setRequestedOrientation(int orientation)
 {
-	// qDebug()<<"QAndroidScreenOrientation::setRequestedOrientation"<<orientation;
-	QAndroidQPAPluginGap::Context activity;
-	activity.callVoid("setRequestedOrientation", jint(orientation));
+	try
+	{
+		// qDebug()<<"QAndroidScreenOrientation::setRequestedOrientation"<<orientation;
+		QAndroidQPAPluginGap::Context activity;
+		activity.callVoid("setRequestedOrientation", jint(orientation));
+	}
+	catch (const std::exception & e)
+	{
+		qWarning() << "JNI exception in setRequestedOrientation:" << e.what();
+	}
 }
 
 
 int getSurfaceRotation()
 {
 	int rotation = ANDROID_SURFACE_ROTATION_UNDEFINED;
-
-	try 
+	try
 	{
-		QAndroidQPAPluginGap::Context activity;
-		QScopedPointer<QJniObject> wm(activity.callObject("getWindowManager",  "android/view/WindowManager"));
-		if (!wm)
+		static QMutex s_mutex;
+		static QScopedPointer<QJniObject> s_display;
+		QMutexLocker locker(&s_mutex);
+		if (!s_display || !s_display->jObject())
 		{
-			qWarning() << "QAndroidScreenOrientation: could not get window manager";
-			throw std::exception();
+			QScopedPointer<QJniObject> wm(QAndroidQPAPluginGap::Context().callObject(
+				"getWindowManager"
+				, "android/view/WindowManager"));
+			if (!wm || !wm->jObject())
+			{
+				throw QJniBaseException("No WindowManager.");
+			}
+			s_display.reset(wm->callObject("getDefaultDisplay", "android/view/Display"));
+			if (!s_display || !s_display->jObject())
+			{
+				throw QJniBaseException("No default Display.");
+			}
 		}
-		QScopedPointer<QJniObject> display(wm->callObject("getDefaultDisplay", "android/view/Display"));
-		if (!display)
-		{
-			qWarning() << "QAndroidScreenOrientation: could not get display";
-			throw std::exception();
-		}
-		
-		rotation = display->callInt("getRotation");
+		rotation = s_display->callInt("getRotation");
 	}
 	catch (const std::exception & e)
 	{
-		qWarning() << "QAndroidScreenOrientation exception (3):" << e.what();
+		qWarning() << "Exception in QAndroidScreenOrientation => getSurfaceRotation:" << e.what();
 	}
-
 	return rotation;
 }
 
@@ -178,9 +198,9 @@ int getCurrentFixedOrientation()
 
 
 
-OrientationLock::OrientationLock():
-	saved_orientation_(getRequestedOrientation()),
-	locked_(false)
+OrientationLock::OrientationLock()
+	: saved_orientation_(getRequestedOrientation())
+	, locked_(false)
 {
 	if (saved_orientation_ != ANDROID_ACTIVITYINFO_SCREEN_ORIENTATION_NOSENSOR)
 	{
@@ -195,12 +215,14 @@ OrientationLock::OrientationLock():
 	qWarning()<<"QAndroidScreenOrientation::OrientationLock failed to lock current screen orientation.";
 }
 
-OrientationLock::OrientationLock(int desired_orientation):
-	saved_orientation_(getRequestedOrientation()),
-	locked_(true)
+
+OrientationLock::OrientationLock(int desired_orientation)
+	: saved_orientation_(getRequestedOrientation())
+	, locked_(true)
 {
 	setRequestedOrientation(desired_orientation);
 }
+
 
 OrientationLock::~OrientationLock()
 {
@@ -209,5 +231,6 @@ OrientationLock::~OrientationLock()
 		setRequestedOrientation(saved_orientation_);
 	}
 }
+
 
 } // namespace QAndroidScreenOrientation

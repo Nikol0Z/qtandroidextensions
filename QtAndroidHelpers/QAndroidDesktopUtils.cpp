@@ -41,6 +41,7 @@ namespace QAndroidDesktopUtils {
 
 static const char * const c_full_class_name_ = "ru/dublgis/androidhelpers/DesktopUtils";
 
+
 void preloadJavaClasses()
 {
 	static bool s_preloaded = false;
@@ -51,6 +52,7 @@ void preloadJavaClasses()
 	}
 
 }
+
 
 bool isInternetActive()
 {
@@ -71,6 +73,7 @@ bool isInternetActive()
 	}
 }
 
+
 int getNetworkType()
 {
 	QJniClass du(c_full_class_name_);
@@ -85,6 +88,7 @@ void showApplicationSettings()
 	du.callStaticParamVoid("showApplicationSettings", "Landroid/content/Context;", activity.jObject());
 }
 
+
 bool sendTo(const QString & chooser_caption, const QString & text, const QString & content_type)
 {
 	QJniClass du(c_full_class_name_);
@@ -96,6 +100,7 @@ bool sendTo(const QString & chooser_caption, const QString & text, const QString
 		QJniLocalRef(content_type).jObject());
 }
 
+
 bool sendSMS(const QString & number, const QString & text)
 {
 	QJniClass du(c_full_class_name_);
@@ -105,6 +110,7 @@ bool sendSMS(const QString & number, const QString & text)
 		QJniLocalRef(number).jObject(),
 		QJniLocalRef(text).jObject());
 }
+
 
 bool sendEmail(
 	const QString & to,
@@ -127,6 +133,7 @@ bool sendEmail(
 		static_cast<jboolean>(force_content_provider),
 		QJniLocalRef(authorities).jObject());
 }
+
 
 bool sendEmail(
 	const QString & to,
@@ -162,6 +169,7 @@ bool sendEmail(
 		QJniLocalRef(authorities).jObject());
 }
 
+
 bool openURL(const QString & url)
 {
 	QJniClass du(c_full_class_name_);
@@ -170,6 +178,7 @@ bool openURL(const QString & url)
 		activity.jObject(),
 		QJniLocalRef(url).jObject());
 }
+
 
 bool openFile(const QString & fileName, const QString & mimeType)
 {
@@ -181,6 +190,7 @@ bool openFile(const QString & fileName, const QString & mimeType)
 		QJniLocalRef(mimeType).jObject());
 }
 
+
 bool installApk(const QString & apk)
 {
 	QJniClass du(c_full_class_name_);
@@ -189,6 +199,7 @@ bool installApk(const QString & apk)
 		activity.jObject(),
 		QJniLocalRef(apk).jObject());
 }
+
 
 void uninstallApk(const QString & packagename)
 {
@@ -210,14 +221,63 @@ void showNotify(const QString & title, const QString & text, const QString & app
         );
 }
 
-bool callNumber(const QString & number)
+bool callNumber(const QString & number, const QString & action)
 {
 	QJniClass du(c_full_class_name_);
 	QAndroidQPAPluginGap::Context activity;
-	return du.callStaticParamBoolean("callNumber", "Landroid/content/Context;Ljava/lang/String;",
-		activity.jObject(),
-		QJniLocalRef(number).jObject());
+	return du.callStaticParamBoolean(
+		"callNumber"
+		, "Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;"
+		, activity.jObject()
+		, QJniLocalRef(number).jObject()
+		, QJniLocalRef(action).jObject());
 }
+
+
+bool showPhoneNumber(const QString & number)
+{
+	return callNumber(number, QLatin1String("android.intent.action.VIEW"));
+}
+
+
+bool dialPhoneNumber(const QString & number)
+{
+	if (!callNumber(number, QLatin1String("android.intent.action.DIAL")))
+	{
+		qWarning() << "dialPhoneNumber failed, falling back to showPhoneNumber.";
+		return showPhoneNumber(number);
+	}
+	return true;
+}
+
+
+bool isVoiceTelephonyAvailable()
+{
+	return QJniClass(c_full_class_name_).callStaticParamBoolean(
+		"isVoiceTelephonyAvailable"
+		, "Landroid/content/Context;"
+		, QAndroidQPAPluginGap::Context().jObject());
+}
+
+
+bool callPhoneNumber(const QString & number)
+{
+	if (checkSelfPermission("android.permission.CALL_PHONE"))
+	{
+		if (!callNumber(number, QLatin1String("android.intent.action.CALL")))
+		{
+			qWarning() << "callPhoneNumber: failed, falling back to dialPhoneNumber.";
+			return dialPhoneNumber(number);
+		}
+		return true;
+	}
+	else
+	{
+		qDebug() << "callPhoneNumber: no permission, falling back to dialPhoneNumber.";
+		return dialPhoneNumber(number);
+	}
+}
+
 
 QString getTelephonyDeviceId()
 {
@@ -226,6 +286,7 @@ QString getTelephonyDeviceId()
 	return du.callStaticParamString("getTelephonyDeviceId", "Landroid/content/Context;", activity.jObject());
 }
 
+
 QString getDisplayCountry()
 {
 	QJniClass du(c_full_class_name_);
@@ -233,12 +294,14 @@ QString getDisplayCountry()
 	return du.callStaticParamString("getDisplayCountry", "Landroid/content/Context;", activity.jObject());
 }
 
+
 QString getCountry()
 {
 	QJniClass du(c_full_class_name_);
 	QAndroidQPAPluginGap::Context activity;
 	return du.callStaticParamString("getCountry", "Landroid/content/Context;", activity.jObject());
 }
+
 
 QString getAndroidId()
 {
@@ -254,13 +317,13 @@ QString getWifiMacAddress()
 	return du.callStaticParamString("getWifiMacAddress", "Landroid/content/Context;", activity.jObject());
 }
 
-
 QString getBuildSerial()
 {
 	QJniClass du(c_full_class_name_);
 	QAndroidQPAPluginGap::Context activity;
 	return du.callStaticString("getBuildSerial");
 }
+
 
 QStringList getInstalledAppsList()
 {
@@ -269,6 +332,7 @@ QStringList getInstalledAppsList()
 	QString list = du.callStaticParamString("getInstalledAppsList", "Landroid/content/Context;", activity.jObject());
 	return list.split(QChar('\n'), QString::SkipEmptyParts);
 }
+
 
 QString getUniqueDeviceId()
 {
@@ -323,6 +387,7 @@ QString getUniqueDeviceId()
 	return device_id;
 }
 
+
 QString getDefaultLocaleName()
 {
 	QJniClass du(c_full_class_name_);
@@ -336,6 +401,7 @@ QString getDefaultLocaleName()
 		return QLatin1String("C");
 	}
 }
+
 
 bool checkSelfPermission(const QString & permission_name)
 {
@@ -353,6 +419,7 @@ bool checkSelfPermission(const QString & permission_name)
 	}
 }
 
+
 bool shouldShowRequestPermissionRationale(const QString & permission_name)
 {
 	if (QAndroidQPAPluginGap::apiLevel() < 23)
@@ -367,6 +434,7 @@ bool shouldShowRequestPermissionRationale(const QString & permission_name)
 			, QJniLocalRef(permission_name).jObject());
 	}
 }
+
 
 void requestPermissions(const QStringList & permission_names, int permission_request_code)
 {

@@ -13,13 +13,13 @@
   modification, are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
+	this list of conditions and the following disclaimer.
   * Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
   * Neither the name of the DoubleGIS, LLC nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+	may be used to endorse or promote products derived from this software
+	without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -206,7 +206,7 @@ Q_DECL_EXPORT void JNICALL Java_onContentHeightReceived(JNIEnv *, jobject, jlong
 	}
 }
 
-Q_DECL_EXPORT void JNICALL Java_onCanGoBackReceived(JNIEnv * env, jobject jo, jlong nativeptr, jboolean can)
+Q_DECL_EXPORT void JNICALL Java_onCanGoBackReceived(JNIEnv *, jobject, jlong nativeptr, jboolean can)
 {
 	if (QAndroidOffscreenWebView * wv = AOWW(nativeptr))
 	{
@@ -214,7 +214,7 @@ Q_DECL_EXPORT void JNICALL Java_onCanGoBackReceived(JNIEnv * env, jobject jo, jl
 	}
 }
 
-Q_DECL_EXPORT void JNICALL Java_onCanGoForwardReceived(JNIEnv * env, jobject jo, jlong nativeptr, jboolean can)
+Q_DECL_EXPORT void JNICALL Java_onCanGoForwardReceived(JNIEnv *, jobject, jlong nativeptr, jboolean can)
 {
 	if (QAndroidOffscreenWebView * wv = AOWW(nativeptr))
 	{
@@ -222,7 +222,7 @@ Q_DECL_EXPORT void JNICALL Java_onCanGoForwardReceived(JNIEnv * env, jobject jo,
 	}
 }
 
-Q_DECL_EXPORT void JNICALL Java_onCanGoBackOrForwardReceived(JNIEnv * env, jobject jo, jlong nativeptr, jboolean can, jint steps)
+Q_DECL_EXPORT void JNICALL Java_onCanGoBackOrForwardReceived(JNIEnv *, jobject, jlong nativeptr, jboolean can, jint steps)
 {
 	if (QAndroidOffscreenWebView * wv = AOWW(nativeptr))
 	{
@@ -238,34 +238,34 @@ QAndroidOffscreenWebView::QAndroidOffscreenWebView(const QString & object_name, 
 		//
 		// WebViewClient Methods
 		//
-		{"doUpdateVisitedHistory", "(JLjava/lang/String;Z)V", (void*)Java_doUpdateVisitedHistory},
-		{"onFormResubmission", "(JLandroid/os/Message;Landroid/os/Message;)V", (void*)Java_onFormResubmission},
-		{"onLoadResource", "(JLjava/lang/String;)V", (void*)Java_onLoadResource},
-		{"onPageFinished", "(JLjava/lang/String;)V", (void*)Java_onPageFinished},
-		{"onPageStarted", "(JLjava/lang/String;Landroid/graphics/Bitmap;)V", (void*)Java_onPageStarted},
-		{"onReceivedError", "(JILjava/lang/String;Ljava/lang/String;)V", (void*)Java_onReceivedError},
-		{"onReceivedHttpAuthRequest", "(JLandroid/webkit/HttpAuthHandler;Ljava/lang/String;Ljava/lang/String;)V", (void*)Java_onReceivedHttpAuthRequest},
-		{"onReceivedLoginRequest", "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", (void*)Java_onReceivedLoginRequest},
-		{"onReceivedSslError", "(JLandroid/webkit/SslErrorHandler;Landroid/net/http/SslError;)V", (void*)Java_onReceivedSslError},
-		{"onScaleChanged", "(JFF)V", (void*)Java_onScaleChanged},
-		{"onTooManyRedirects", "(JLandroid/os/Message;Landroid/os/Message;)V", (void*)Java_onTooManyRedirects},
-		{"onUnhandledKeyEvent", "(JLandroid/view/KeyEvent;)V", (void*)Java_onUnhandledKeyEvent},
-		{"shouldInterceptRequest", "(JLjava/lang/String;)Landroid/webkit/WebResourceResponse;", (void*)Java_shouldInterceptRequest},
-		{"shouldOverrideKeyEvent", "(JLandroid/view/KeyEvent;)Z", (void*)Java_shouldOverrideKeyEvent},
-		{"shouldOverrideUrlLoading", "(JLjava/lang/String;)Z", (void*)Java_shouldOverrideUrlLoading},
+		{"doUpdateVisitedHistory", "(JLjava/lang/String;Z)V", reinterpret_cast<void*>(Java_doUpdateVisitedHistory)},
+		{"onFormResubmission", "(JLandroid/os/Message;Landroid/os/Message;)V", reinterpret_cast<void*>(Java_onFormResubmission)},
+		{"onLoadResource", "(JLjava/lang/String;)V", reinterpret_cast<void*>(Java_onLoadResource)},
+		{"onPageFinished", "(JLjava/lang/String;)V", reinterpret_cast<void*>(Java_onPageFinished)},
+		{"onPageStarted", "(JLjava/lang/String;Landroid/graphics/Bitmap;)V", reinterpret_cast<void*>(Java_onPageStarted)},
+		{"onReceivedError", "(JILjava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void*>(Java_onReceivedError)},
+		{"onReceivedHttpAuthRequest", "(JLandroid/webkit/HttpAuthHandler;Ljava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void*>(Java_onReceivedHttpAuthRequest)},
+		{"onReceivedLoginRequest", "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void*>(Java_onReceivedLoginRequest)},
+		{"onReceivedSslError", "(JLandroid/webkit/SslErrorHandler;Landroid/net/http/SslError;)V", reinterpret_cast<void*>(Java_onReceivedSslError)},
+		{"onScaleChanged", "(JFF)V", reinterpret_cast<void*>(Java_onScaleChanged)},
+		{"onTooManyRedirects", "(JLandroid/os/Message;Landroid/os/Message;)V", reinterpret_cast<void*>(Java_onTooManyRedirects)},
+		{"onUnhandledKeyEvent", "(JLandroid/view/KeyEvent;)V", reinterpret_cast<void*>(Java_onUnhandledKeyEvent)},
+		{"shouldInterceptRequest", "(JLjava/lang/String;)Landroid/webkit/WebResourceResponse;", reinterpret_cast<void*>(Java_shouldInterceptRequest)},
+		{"shouldOverrideKeyEvent", "(JLandroid/view/KeyEvent;)Z", reinterpret_cast<void*>(Java_shouldOverrideKeyEvent)},
+		{"shouldOverrideUrlLoading", "(JLjava/lang/String;)Z", reinterpret_cast<void*>(Java_shouldOverrideUrlLoading)},
 
 		//
 		// WebChromiumClient Methods
 		//
-		{"onProgressChanged", "(JLandroid/webkit/WebView;I)V", (void*)Java_onProgressChanged},
+		{"onProgressChanged", "(JLandroid/webkit/WebView;I)V", reinterpret_cast<void*>(Java_onProgressChanged)},
 
 		//
 		// Own callbacks
 		//
-		{"onContentHeightReceived", "(JI)V", (void*)Java_onContentHeightReceived},
-		{"onCanGoBackReceived", "(JZ)V", (void*)Java_onCanGoBackReceived},
-		{"onCanGoForwardReceived", "(JZ)V", (void*)Java_onCanGoForwardReceived},
-		{"onCanGoBackOrForwardReceived", "(JZI)V", (void*)Java_onCanGoBackOrForwardReceived}
+		{"onContentHeightReceived", "(JI)V", reinterpret_cast<void*>(Java_onContentHeightReceived)},
+		{"onCanGoBackReceived", "(JZ)V", reinterpret_cast<void*>(Java_onCanGoBackReceived)},
+		{"onCanGoForwardReceived", "(JZ)V", reinterpret_cast<void*>(Java_onCanGoForwardReceived)},
+		{"onCanGoBackOrForwardReceived", "(JZI)V", reinterpret_cast<void*>(Java_onCanGoBackOrForwardReceived)},
 	};
 	if (QJniObject * ov = offscreenView())
 	{
@@ -355,6 +355,13 @@ bool QAndroidOffscreenWebView::loadDataWithBaseURL(const QString & baseUrl, cons
 
 bool QAndroidOffscreenWebView::requestContentHeight()
 {
+	QJniObject * view = offscreenView();
+	if (view)
+	{
+		return view->callBool("requestContentHeight");
+	}
+	qWarning("QAndroidOffscreenWebView: Attempt to requestContentHeight when View is null.");
+	return false;
 }
 
 void QAndroidOffscreenWebView::requestCanGoBack()
@@ -395,6 +402,14 @@ void QAndroidOffscreenWebView::goForward()
 	{
 		view->callVoid("goForward");
 	}
+}
+
+void QAndroidOffscreenWebView::setWebContentsDebuggingEnabled(bool enabled)
+{
+    if (QJniObject * view = offscreenView())
+    {
+        view->callVoid("setWebContentsDebuggingEnabled", static_cast<jboolean>(enabled));
+    }
 }
 
 void QAndroidOffscreenWebView::requestCanGoBackOrForward(int steps)
@@ -534,7 +549,7 @@ jboolean QAndroidOffscreenWebView::shouldOverrideKeyEvent(JNIEnv *, jobject, job
 	return 0;
 }
 
-jboolean QAndroidOffscreenWebView::shouldOverrideUrlLoading(JNIEnv * env, jobject, jobject url)
+jboolean QAndroidOffscreenWebView::shouldOverrideUrlLoading(JNIEnv *, jobject, jobject url)
 {
 	// Doing OffscreenWebView.loadUrl(url).
 	// This should always be done for Chrome to avoid opening links in external browser.

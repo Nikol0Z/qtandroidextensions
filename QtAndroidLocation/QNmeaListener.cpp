@@ -39,7 +39,7 @@
 #include "QNmeaListener.h"
 #include "TJniObjectLinker.h"
 
-static const char c_full_class_name[] = "ru/dublgis/androidgpslocation/NmeaListener";
+static const char c_full_class_name[] = "ru/dublgis/androidlocation/NmeaListener";
 
 Q_DECL_EXPORT void JNICALL Java_NmeaListener_OnNmeaReceivedNative(JNIEnv * env, jobject, jlong param, jlong timestamp, jstring str)
 {
@@ -58,10 +58,19 @@ Q_DECL_EXPORT void JNICALL Java_NmeaListener_OnNmeaReceivedNative(JNIEnv * env, 
 
 
 static const JNINativeMethod methods[] = {
-	{"getActivity", "()Landroid/app/Activity;", (void*)QAndroidQPAPluginGap::getActivity},
-	{"getContext", "()Landroid/content/Context;", (void*)QAndroidQPAPluginGap::getCurrentContext},
-	{"OnNmeaReceivedNative", "(JJLjava/lang/String;)V", (void*)Java_NmeaListener_OnNmeaReceivedNative},
+	{"getActivity", "()Landroid/app/Activity;", reinterpret_cast<void*>(QAndroidQPAPluginGap::getActivityNoThrow)},
+	{"getContext", "()Landroid/content/Context;", reinterpret_cast<void*>(QAndroidQPAPluginGap::getCurrentContextNoThrow)},
+	{"OnNmeaReceivedNative", "(JJLjava/lang/String;)V", reinterpret_cast<void*>(Java_NmeaListener_OnNmeaReceivedNative)},
 };
+
+
+/*!
+	\class QNmeaListener
+	\inheaderfile QNmeaListener.h
+	\inmodule QtAndroidLocation
+	\ingroup QtAndroidLocationGroup
+	\brief Class for receiving  NMEA sentences from the GPS.
+*/
 
 
 JNI_LINKER_IMPL(QNmeaListener, c_full_class_name, methods)

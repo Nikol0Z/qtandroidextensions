@@ -43,9 +43,7 @@
 #include <IJniObjectLinker.h>
 
 
-/*!
- * A class for geting location from Google Play Services
- */
+
 class QAndroidGmsLocationProvider: public QObject
 {
 	Q_OBJECT
@@ -58,8 +56,6 @@ public:
 		S_CONNECTED 		= 1,
 		S_CONNECT_ERROR 	= 2,
 		S_CONNECT_SUSPEND	= 3,
-		S_REQUEST_SUCCESS	= 4,
-		S_REQUEST_FAIL		= 5,
 	};
 
 	enum enPriority
@@ -80,44 +76,45 @@ public slots:
 	virtual void requestUpdate(int timeout = 0);
 
 private slots:
-	void onRequestTimeout();
 	void onApplicationStateChanged(Qt::ApplicationState state);
-	void onCheckRequest(long requestId);
+	void onCheckRequest(jlong requestId);
 
 signals:
 	void statusChanged(int);
+	void locationAvailable(bool);
 	void locationRecieved(QGeoPositionInfo);
-	void checkRequest(long requestId);
+	void checkRequest(jlong requestId);
 
 public:
 	static bool isAvailable(jboolean allowDialog);
 	static int getGmsVersion();
-	void setUpdateInterval(int64_t reqiredInterval, int64_t minimumInterval);
+	void setUpdateInterval(int reqiredInterval, int minimumInterval);
 	void setPriority(enPriority priority);
 	QGeoPositionInfo lastKnownPosition() const;
 
 private:
 	void stopUpdates(jlong requestId);
-	void onStatusChanged(int status);
+	void onStatusChanged(jint status);
+	void onLocationAvailable(jboolean available);
 	void onLocationRecieved(const QGeoPositionInfo &location, jboolean initial, jlong requestId);
 
 private:
 	Q_DISABLE_COPY(QAndroidGmsLocationProvider)
 	friend void JNICALL Java_GooglePlayServiceLocationProvider_locationRecieved(JNIEnv * env, jobject, jlong param, jobject location, jboolean initial, jlong requestId);
 	friend void JNICALL Java_GooglePlayServiceLocationProvider_locationStatus(JNIEnv * env, jobject, jlong param, jint state);
+	friend void JNICALL Java_GooglePlayServiceLocationProvider_locationAvailable(JNIEnv *, jobject, jlong param, jboolean available);
 
 private:
 	QGeoPositionInfo lastLocation_;
 	mutable QMutex lastLocationSync_;
 
-	jlong reqiredInterval_; 
-	jlong minimumInterval_;
+	int reqiredInterval_;
+	int minimumInterval_;
 	enPriority priority_;
 
+	typedef std::list<jlong> RequestsColl;
 	jlong regularUpdadesId_;
-	jlong requestUpdadesId_;
-
-	QTimer requestTimer_;
+	RequestsColl requestUpdadesIds_;
 };
 
 

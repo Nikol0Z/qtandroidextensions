@@ -2,11 +2,11 @@
 	Offscreen Android Views library for Qt
 
 	Author:
-	Vyacheslav O. Koscheev <vok1980@gmail.com>
+	  Vyacheslav O. Koscheev <vok1980@gmail.com>
 
 	Distrbuted under The BSD License
 
-	Copyright (c) 2015, DoubleGIS, LLC.
+	Copyright (c) 2017, DoubleGIS, LLC.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -34,79 +34,51 @@
 	THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "QAndroidWiFiLocker.h"
 
-#include <QAndroidQPAPluginGap.h>
-#include <TJniObjectLinker.h>
+#include "PositionInfoConvertor.h"
 
 
-static const char * const c_full_class_name_ = "ru/dublgis/androidhelpers/WifiLocker";
 
-
-static const JNINativeMethod methods[] =
+static void setPositionAttributeFloat(QGeoPositionInfo & info, QGeoPositionInfo::Attribute attr,
+                                      QJniObject & location, const char * szCheck, const char * szGet)
 {
-	{"getContext", "()Landroid/content/Context;", reinterpret_cast<void*>(QAndroidQPAPluginGap::getCurrentContextNoThrow)},
-};
-
-
-JNI_LINKER_IMPL(QAndroidWiFiLocker, c_full_class_name_, methods)
-
-
-QAndroidWiFiLocker & QAndroidWiFiLocker::instance()
-{
-	static QAndroidWiFiLocker obj;
-	return obj;
-}
-
-
-QAndroidWiFiLocker::QAndroidWiFiLocker()
-	: QLocks::QLockedObject(false)
-	, jniLinker_(new JniObjectLinker(this))
-{
-}
-
-
-QAndroidWiFiLocker::~QAndroidWiFiLocker()
-{
-}
-
-
-void QAndroidWiFiLocker::lock()
-{
-	if (isJniReady())
+	if (location.callBool(szCheck))
 	{
-		jni()->callBool("Lock");
+		jfloat val = location.callFloat(szGet);
+		info.setAttribute(attr, val);
 	}
 }
 
 
-void QAndroidWiFiLocker::unlock()
+QGeoPositionInfo positionInfoFromJavaLocation(const jobject jlocation)
 {
-	if (isJniReady())
-	{
-		jni()->callVoid("Unlock");
-	}
-}
+	QGeoPositionInfo info;
+	QJniObject location(jlocation, false);
 
-
-bool QAndroidWiFiLocker::isLocked()
-{
-	if (isJniReady())
+	if (!location)
 	{
-		return jni()->callBool("IsLocked");
+		qWarning() << "null location";
+		return QGeoPositionInfo();
 	}
 
-	return false;
-}
+	jdouble latitude = location.callDouble("getLatitude");
+	jdouble longitude = location.callDouble("getLongitude");
+	QGeoCoordinate coordinate(latitude, longitude);
 
-
-bool QAndroidWiFiLocker::isWifiEnabled()
-{
-	if (isJniReady())
+	if (location.callBool("hasAltitude"))
 	{
-		return jni()->callBool("IsWifiEnabled");
+		jdouble value = location.callDouble("getAltitude");
+		coordinate.setAltitude(value);
 	}
 
-	return false;
-}
+	info.setCoordinate(coordinate);
 
+	jlong timestamp = location.callLong("getTime");
+	info.setTimestamp(QDateTime::fromMSecsSinceEpoch(timestamp));
+
+	setPositionAttributeFloat(info, QGeoPositionInfo::HorizontalAccuracy,	location, "hasAccuracy",	"getAccuracy");
+	setPositionAttributeFloat(info, QGeoPositionInfo::GroundSpeed,			location, "hasSpeed",		"getSpeed");
+	setPositionAttributeFloat(info, QGeoPositionInfo::Direction,			location, "hasBearing",		"getBearing");
+
+	return info;
+}

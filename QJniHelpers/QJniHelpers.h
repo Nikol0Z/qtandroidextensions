@@ -7,7 +7,7 @@
 
   Distrbuted under The BSD License
 
-  Copyright (c) 2014, DoubleGIS, LLC.
+  Copyright (c) 2017, DoubleGIS, LLC.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -48,46 +48,54 @@
 class QJniBaseException: public std::exception
 {
 public:
-	QJniBaseException(const QByteArray & message = "");
+	QJniBaseException(const QByteArray & message);
 	virtual const char * what() const throw();
+protected:
+	static QByteArray readableIdString(const char * id);
 private:
 	const QByteArray message_;
 };
 
+
 class QJniThreadAttachException: public QJniBaseException
 {
 public:
-	QJniThreadAttachException();
+	QJniThreadAttachException(const char * detail);
 };
+
 
 class QJniClassNotFoundException: public QJniBaseException
 {
 public:
-	QJniClassNotFoundException();
+	QJniClassNotFoundException(const char * class_name);
 };
+
 
 class QJniClassNotSetException: public QJniBaseException
 {
 public:
-	QJniClassNotSetException();
+	QJniClassNotSetException(const char * class_name, const char * call_point_info);
 };
+
 
 class QJniMethodNotFoundException: public QJniBaseException
 {
 public:
-	QJniMethodNotFoundException();
+	QJniMethodNotFoundException(const char * class_name, const char * method_name, const char * call_point_info);
 };
+
 
 class QJniFieldNotFoundException: public QJniBaseException
 {
 public:
-	QJniFieldNotFoundException();
+	QJniFieldNotFoundException(const char * class_name, const char * field_name, const char * call_point_info);
 };
+
 
 class QJniJavaCallException: public QJniBaseException
 {
 public:
-	QJniJavaCallException(const QByteArray & callDetails);
+	QJniJavaCallException(const char * class_name, const char * method_name, const char * call_point_info);
 };
 
 
@@ -204,7 +212,7 @@ public:
 	//! Create QJniClass for the jobject.
 	QJniClass(jobject object);
 
-	QJniClass(const QJniClass &other);
+	QJniClass(const QJniClass & other);
 
 	virtual ~QJniClass();
 
@@ -263,14 +271,32 @@ public:
 	//! Get JNI reference to the wrapped Java class.
 	jclass jClass() const { return class_; }
 
+	/*!
+	 * Retrieve class name (via JNI). If \a simple is true then only the class name is returned
+	 * (e.g.: "String"), if it's false then full name with class path (e.g.: "java/lang/String").
+	 */
+	QString getClassName(bool simple = false) const;
+
+	const QByteArray & constructionClassName() const { return construction_class_name_; }
+
+	QByteArray debugClassName() const;
+
 protected:
 	void initClass(JNIEnv * env, jclass clazz);
 	void clearClass(JNIEnv * env);
 
-	inline jclass checkedClass() { if (!class_) throw QJniClassNotSetException(); return class_; }
+	inline jclass checkedClass(const char * call_point_info)
+	{
+		if (!class_)
+		{
+			throw QJniClassNotSetException(construction_class_name_.constData(), call_point_info);
+		}
+		return class_;
+	}
 
 private:
 	jclass class_;
+	QByteArray construction_class_name_;
 };
 
 
@@ -369,8 +395,13 @@ public:
 	//! Get value of int field of the wrapped Java object
 	int getIntField(const char * field_name);
 
+	//! Get value of long field of the wrapped Java object
+	jlong getLongField(const char * field_name);
+
 	//! Get value of float field of the wrapped Java object
 	float getFloatField(const char * field_name);
+
+	jboolean getBooleanField(const char * field_name);
 
 	void setIntField(const char * field_name, jint value);
 	void setBooleanField(const char * field_name, jboolean value);

@@ -246,10 +246,10 @@ void QAndroidOffscreenView::preloadJavaClasses()
 
 		QJniClass ov("ru/dublgis/offscreenview/OffscreenView");
 		static const JNINativeMethod methods[] = {
-			{"nativeUpdate", "(J)V", (void*)Java_OffscreenView_nativeUpdate},
-			{"nativeViewCreated", "(J)V", (void*)Java_OffscreenView_nativeViewCreated},
-			{"getActivity", "()Landroid/app/Activity;", (void*)QAndroidQPAPluginGap::getActivity},
-			{"nativeOnVisibleRect", "(JIIII)V", (void*)Java_OffscreenView_onVisibleRect},
+			{"nativeUpdate", "(J)V", reinterpret_cast<void*>(Java_OffscreenView_nativeUpdate)},
+			{"nativeViewCreated", "(J)V", reinterpret_cast<void*>(Java_OffscreenView_nativeViewCreated)},
+			{"getActivity", "()Landroid/app/Activity;", reinterpret_cast<void*>(QAndroidQPAPluginGap::getActivityNoThrow)},
+			{"nativeOnVisibleRect", "(JIIII)V", reinterpret_cast<void*>(Java_OffscreenView_onVisibleRect)},
 		};
 		ov.registerNativeMethods(methods, sizeof(methods));
 	}
@@ -299,7 +299,7 @@ void QAndroidOffscreenView::initializeGL()
 		// (IMG textures seem to be supported by all GLES2 devices, but not OES.)
 		// We have to detect that and keep that in mind.
 		{
-			QByteArray extensions((const char *)glGetString(GL_EXTENSIONS));
+			QByteArray extensions(reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS)));
 			s_have_to_adjust_size_to_pot = !extensions.contains("GL_OES_texture_npot");
 			qDebug()<<((!s_have_to_adjust_size_to_pot)?
 				"GL_OES_texture_npot is available." :

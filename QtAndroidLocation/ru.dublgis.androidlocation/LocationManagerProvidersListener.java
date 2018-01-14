@@ -56,14 +56,22 @@ public class LocationManagerProvidersListener extends BroadcastReceiver
 	public LocationManagerProvidersListener(long native_ptr)
 	{
 		native_ptr_ = native_ptr;
-		getActivity().registerReceiver(this, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+		try {
+			getActivity().registerReceiver(this, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+		} catch (final Throwable e) {
+			Log.e(TAG, "Exception in LocationManagerProvidersListener constructor: ", e);
+		}
 	}
 
 
 	//! Called from C++ to notify us that the associated C++ object is being destroyed.
 	public void cppDestroyed()
 	{
-		getActivity().unregisterReceiver(this);
+		try {
+			getActivity().unregisterReceiver(this);
+		} catch (final Throwable e) {
+			Log.e(TAG, "Exception in cppDestroyed: ", e);
+		}
 		native_ptr_ = 0;
 	}
 
@@ -82,6 +90,18 @@ public class LocationManagerProvidersListener extends BroadcastReceiver
 	public boolean isActiveProvidersEnabled()
 	{
 		return isGpsProviderEnabled() || isNetworkProviderEnabled();
+	}
+
+
+	public boolean isGpsProviderAvailable()
+	{
+		return isProviderAvailable(LocationManager.GPS_PROVIDER);
+	}
+
+
+	public boolean isNetworkProviderAvailable()
+	{
+		return isProviderAvailable(LocationManager.NETWORK_PROVIDER);
 	}
 
 
@@ -110,11 +130,28 @@ public class LocationManagerProvidersListener extends BroadcastReceiver
 		}
 		catch(Throwable e)
 		{
-			Log.e(TAG, "LocationManager failed" + e.getMessage());
-			e.printStackTrace();
+			Log.e(TAG, "isProviderEnabled exception: " + e);
 		}
 
 		return ret;
+	}
+
+
+	public boolean isProviderAvailable(String provider)
+	{
+		try
+		{
+			final LocationManager lm =
+				(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+			return lm.getAllProviders().contains(provider);
+		}
+		catch(Throwable e)
+		{
+			Log.e(TAG, "LocationManager.getAllProviders() failed: ", e);
+		}
+
+		return false;
 	}
 
 

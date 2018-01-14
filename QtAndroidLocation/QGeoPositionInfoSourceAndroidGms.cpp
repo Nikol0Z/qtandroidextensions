@@ -45,12 +45,27 @@
 Q_DECLARE_METATYPE(QGeoPositionInfo)
 
 
-QGeoPositionInfoSourceAndroidGms::QGeoPositionInfoSourceAndroidGms(QObject * parent) :
-	QGeoPositionInfoSource(parent),
-	m_error(NoError),
-	regularProvider_(NULL),
-	updatesRunning_(false),
-	activeProvidersDisabled_(false)
+/*!
+	\class QGeoPositionInfoSourceAndroidGms
+	\inherits QGeoPositionInfoSource
+	\inheaderfile QGeoPositionInfoSourceAndroidGms.h
+	\inmodule QtAndroidLocation
+	\ingroup QtAndroidLocationGroup
+	\ingroup GeoPositionInfoSources
+	\brief Geo position info source for android GMS
+
+	GMS position info source. Recieves data from QAndroidGmsLocationProvider
+	\sa QAndroidGmsLocationProvider
+*/
+
+
+QGeoPositionInfoSourceAndroidGms::QGeoPositionInfoSourceAndroidGms(QObject * parent)
+	: QGeoPositionInfoSource(parent)
+	, regularProvider_(NULL)
+	, providersListener_(NULL)
+	, updatesRunning_(false)
+	, m_error(NoError)
+	, activeProvidersDisabled_(false)
 {
 	qRegisterMetaType<QGeoPositionInfo>();
 
@@ -201,7 +216,7 @@ QGeoPositionInfoSource::PositioningMethods QGeoPositionInfoSourceAndroidGms::sup
 
 int QGeoPositionInfoSourceAndroidGms::minimumUpdateInterval() const
 {
-	return 1000;
+	return 500;
 }
 
 void QGeoPositionInfoSourceAndroidGms::setError(Error errval)
@@ -258,12 +273,10 @@ void QGeoPositionInfoSourceAndroidGms::onStatusChanged(int status)
 		case QAndroidGmsLocationProvider::S_DISCONNECTED:
 		case QAndroidGmsLocationProvider::S_CONNECT_ERROR:
 		case QAndroidGmsLocationProvider::S_CONNECT_SUSPEND:
-		case QAndroidGmsLocationProvider::S_REQUEST_FAIL:
 			setError(QGeoPositionInfoSource::ClosedError);
 			break;
 
 		case QAndroidGmsLocationProvider::S_CONNECTED:
-		case QAndroidGmsLocationProvider::S_REQUEST_SUCCESS:
 			setError(QGeoPositionInfoSource::NoError);
 			break;
 

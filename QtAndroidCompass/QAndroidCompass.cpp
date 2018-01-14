@@ -44,26 +44,28 @@
 
 
 
-Q_DECL_EXPORT void JNICALL Java_setAzimuth(JNIEnv * env, jobject, jlong inst, jfloat azimuth)
+Q_DECL_EXPORT void JNICALL Java_onUpdate(JNIEnv * env, jobject, jlong inst)
 {
 	Q_UNUSED(env);
 
 	JNI_LINKER_OBJECT(QAndroidCompass, inst, proxy)
-	proxy->setAzimuth(azimuth);
+	proxy->onUpdate();
 }
 
 
 static const JNINativeMethod methods[] = {
-	{"getContext", "()Landroid/content/Context;", (void*)QAndroidQPAPluginGap::getCurrentContext},
-	{"setAzimuth", "(JF)V", (void*)Java_setAzimuth},
+	{"getActivity", "()Landroid/app/Activity;", reinterpret_cast<void*>(QAndroidQPAPluginGap::getActivityNoThrow)},
+	{"onUpdate", "(J)V", reinterpret_cast<void*>(Java_onUpdate)},
 };
 
 
-JNI_LINKER_IMPL(QAndroidCompass, "ru/dublgis/androidcompass/CompassProvider", methods)
+JNI_LINKER_IMPL(QAndroidCompass, "ru/dublgis/androidcompass/OrientationProvider", methods)
 
 
-QAndroidCompass::QAndroidCompass()
-	: jniLinker_(new JniObjectLinker(this))
+QAndroidCompass::QAndroidCompass(QObject * parent)
+	: QObject(parent)
+	, jniLinker_(new JniObjectLinker(this))
+	, started_(false)
 {
 }
 
@@ -76,9 +78,9 @@ QAndroidCompass::~QAndroidCompass()
 
 void QAndroidCompass::start(int32_t delayUs /*= -1*/, int32_t latencyUs /*= -1*/)
 {
-	if (isJniReady())
+	if (!started_ && isJniReady())
 	{
-		jni()->callParamVoid("start", "II", static_cast<jint>(delayUs), static_cast<jint>(latencyUs));
+		started_ = jni()->callParamBoolean("start", "II", static_cast<jint>(delayUs), static_cast<jint>(latencyUs));
 	}
 }
 
@@ -88,34 +90,33 @@ void QAndroidCompass::stop()
 	if (isJniReady())
 	{
 		jni()->callVoid("stop");
+		started_ = false;
 	}
 }
 
 
-void QAndroidCompass::resetAzimuthListener(const QWeakPointer<AzimuthListener> & azimuth_listener)
+bool QAndroidCompass::isStarted() const
 {
-	QMutexLocker lock(&send_mutex_);
-	azimuth_listener_ = azimuth_listener;
+	return started_;
 }
 
 
-void QAndroidCompass::setAzimuth(float azimuth)
+float QAndroidCompass::getAzimuth()
 {
-	QSharedPointer<AzimuthListener> azimuth_listener;
+	float data = 0.f;
 
+	if (isJniReady())
 	{
-		QMutexLocker lock(&send_mutex_);
-		azimuth_listener = azimuth_listener_.lock();
+		data = jni()->callParamFloat("getAzimuth", "Z", jboolean(true));
 	}
 
-	if (azimuth_listener)
-	{
-		azimuth_listener->azimuthChanged(azimuth);
-	}
-	else
-	{
-		stop();
-	}
+	return data;
+}
+
+
+void QAndroidCompass::onUpdate()
+{
+	emit azimuthUpdated();
 }
 
 

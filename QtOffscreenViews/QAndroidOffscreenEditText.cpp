@@ -37,6 +37,7 @@
 #include <QAndroidQPAPluginGap.h>
 #include "QAndroidOffscreenEditText.h"
 
+
 Q_DECL_EXPORT void JNICALL Java_AndroidOffscreenEditText_nativeOnTextChanged(JNIEnv *, jobject, jlong param, jstring str, jint start, jint before, jint count)
 {
 	if (param)
@@ -94,9 +95,9 @@ QAndroidOffscreenEditText::QAndroidOffscreenEditText(const QString & object_name
 	if (QJniObject * view = offscreenView())
 	{
 		static const JNINativeMethod methods[] = {
-			{"nativeOnTextChanged", "(JLjava/lang/String;III)V", (void*)Java_AndroidOffscreenEditText_nativeOnTextChanged},
-			{"nativeOnKey", "(JZI)Z", (void*)Java_AndroidOffscreenEditText_nativeOnKey},
-			{"nativeOnEditorAction", "(JI)V", (void*)Java_AndroidOffscreenEditText_nativeOnEditorAction}
+			{"nativeOnTextChanged", "(JLjava/lang/String;III)V", reinterpret_cast<void*>(Java_AndroidOffscreenEditText_nativeOnTextChanged)},
+			{"nativeOnKey", "(JZI)Z", reinterpret_cast<void*>(Java_AndroidOffscreenEditText_nativeOnKey)},
+			{"nativeOnEditorAction", "(JI)V", reinterpret_cast<void*>(Java_AndroidOffscreenEditText_nativeOnEditorAction)},
 		};
 		view->registerNativeMethods(methods, sizeof(methods));
 	}
@@ -561,6 +562,14 @@ void QAndroidOffscreenEditText::setCursorColorToTextColor()
 	if (QJniObject * view = offscreenView())
 	{
 		view->callVoid("setCursorColorToTextColor");
+	}
+}
+
+void QAndroidOffscreenEditText::setMaxLength(int length)
+{
+	if (QJniObject * view = offscreenView())
+	{
+		view->callVoid("setMaxLength", jint(length));
 	}
 }
 

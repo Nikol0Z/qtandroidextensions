@@ -81,12 +81,15 @@
 	#error "Unimplemented QPA case"
 #endif
 
+
 namespace QAndroidQPAPluginGap {
+
 
 QAndroidSpecificJniException::QAndroidSpecificJniException(const char * message)
 	: QJniBaseException(message? message: "Android-specific JNI exception.")
 {
 }
+
 
 JavaVM * detectJavaVM()
 {
@@ -99,29 +102,36 @@ JavaVM * detectJavaVM()
 	#endif
 }
 
+
 jobject JNICALL getActivity(JNIEnv *, jobject)
 {
-	QJniClass theclass(c_activity_getter_class_name);
-	if (!theclass)
-	{
-		throw QAndroidSpecificJniException("QAndroid: Activity retriever class could not be accessed.");
-	}
-	QScopedPointer<QJniObject> activity(theclass.callStaticObject(c_activity_getter_method_name, c_activity_getter_result_name));
+	static QScopedPointer<QJniObject> s_activity;
+	static QMutex s_mutex;
+	QMutexLocker locker(&s_mutex);
 
-	QScopedPointer<QJniObject> service(theclass.callStaticObject(c_service_getter_method_name, c_service_getter_result_name));
-
-	if (!activity)
+	if (!s_activity)
 	{
-	    if (!service){
-		    throw QAndroidSpecificJniException("QAndroid: Failed to get Activity/Service object.");
+		QJniClass theclass(c_activity_getter_class_name);
+		if (!theclass)
+		{
+			throw QAndroidSpecificJniException("QAndroid: Activity retriever class could not be accessed.");
+		}
+ 		QScopedPointer<QJniObject> activity(theclass.callStaticObject(c_activity_getter_method_name, c_activity_getter_result_name));
+
+        QScopedPointer<QJniObject> service(theclass.callStaticObject(c_service_getter_method_name, c_service_getter_result_name));
+
+        if (!activity)
+        {
+            if (!service){
+                throw QAndroidSpecificJniException("QAndroid: Failed to get Activity/Service object.");
+            }
         }
-	}
 
-	if ((activity && !activity->jObject()) || (service && !service->jObject()))
-	{
-		throw QAndroidSpecificJniException("QAndroid: Java instance of the Activity is 0.");
-	}
-
+        if ((activity && !activity->jObject()) || (service && !service->jObject()))
+        {
+            throw QAndroidSpecificJniException("QAndroid: Java instance of the Activity is 0.");
+        }
+    }
     if (activity)
 	    return QJniEnvPtr().env()->NewLocalRef(activity->jObject());
 
@@ -129,7 +139,24 @@ jobject JNICALL getActivity(JNIEnv *, jobject)
 	    return QJniEnvPtr().env()->NewLocalRef(service->jObject());
 }
 
+
+jobject JNICALL getActivityNoThrow(JNIEnv * env, jobject jo)
+{
+	try
+	{
+		return getActivity(env, jo);
+	}
+	catch (const std::exception & e)
+	{
+		qCritical() << "getActivity exception:" << e.what();
+		return static_cast<jobject>(0);
+	}
+}
+
+
+
 static QScopedPointer<QJniObject> custom_context_;
+
 
 void setCustomContext(jobject context)
 {
@@ -142,6 +169,7 @@ void setCustomContext(jobject context)
 		custom_context_.reset();
 	}
 }
+
 
 jobject JNICALL getCustomContext(JNIEnv *, jobject)
 {
@@ -157,6 +185,7 @@ bool customContextSet()
 	return (custom_context_)? true: false;
 }
 
+
 jobject JNICALL getCurrentContext(JNIEnv * env, jobject)
 {
 	if (jobject ret = getCustomContext())
@@ -167,10 +196,26 @@ jobject JNICALL getCurrentContext(JNIEnv * env, jobject)
 	return getActivity();
 }
 
+
+jobject JNICALL getCurrentContextNoThrow(JNIEnv * env, jobject jo)
+{
+	try
+	{
+		return getCurrentContext(env, jo);
+	}
+	catch (const std::exception & e)
+	{
+		qCritical() << "getCurrentContext exception:" << e.what();
+		return static_cast<jobject>(0);
+	}
+}
+
+
 Context::Context():
 	QJniObject(getCurrentContext(), true)
 {
 }
+
 
 void preloadJavaClass(const char * class_name)
 {
@@ -178,30 +223,45 @@ void preloadJavaClass(const char * class_name)
 	// not working properly in some situations (???)
 	// Also, it is nicer to have a single function to preload classed and single path to call it.
 	// So, let's call it through Java.
-	qDebug()<<__PRETTY_FUNCTION__<<class_name;
-	QJniEnvPtr jep;
-	if (jep.isClassPreloaded(class_name))
+	// qDebug()<<__PRETTY_FUNCTION__<<class_name;
+	if (!class_name || !(*class_name))
 	{
-		qDebug()<<"Class already pre-loaded:"<<class_name;
+		qWarning() << "preloadJavaClass has been called with empty class name!";
 		return;
 	}
-	qDebug()<<"Pre-loading:"<<class_name;
+	try
+	{
+		QJniEnvPtr jep;
+		if (jep.isClassPreloaded(class_name))
+		{
+			// qDebug()<<"Class already pre-loaded:"<<class_name;
+			return;
+		}
+		// qDebug()<<"Pre-loading:"<<class_name;
 
-	static const char * const c_class_name = "ru/dublgis/qjnihelpers/ClassLoader";
-	static const char * const c_method_name = "callJNIPreloadClass";
-	#if defined(QPA_QT4GRYM)
-		QJniClass(c_class_name).callStaticVoid(c_method_name, class_name);
-	#elif defined(QPA_QT5)
-		QAndroidJniObject::callStaticMethod<void>(c_class_name, c_method_name, "(Ljava/lang/String;)V",
-			QJniLocalRef(jep, class_name).jObject());
-	#endif
+		static const char * const c_class_name = "ru/dublgis/qjnihelpers/ClassLoader";
+		static const char * const c_method_name = "callJNIPreloadClass";
+		#if defined(QPA_QT4GRYM)
+			QJniClass(c_class_name).callStaticVoid(c_method_name, class_name);
+		#elif defined(QPA_QT5)
+			QAndroidJniObject::callStaticMethod<void>(c_class_name, c_method_name, "(Ljava/lang/String;)V",
+				QJniLocalRef(jep, class_name).jObject());
+		#endif
+	}
+	catch (const std::exception & e)
+	{
+		qWarning() << "Failed to preload class:" << class_name << "Exception:" << e.what();
+		throw;
+	}
 }
+
 
 void preloadJavaClasses()
 {
 	preloadJavaClass(c_activity_getter_class_name);
 	preloadJavaClass("android/os/Build$VERSION");
 }
+
 
 int apiLevel()
 {
@@ -216,8 +276,11 @@ int apiLevel()
 
 } // namespace QAndroidQPAPluginGap
 
+
 // JNI entry points. Must be "C" because the function names should not be mangled.
 extern "C" {
+
+JNIEXPORT void JNICALL Java_ru_dublgis_qjnihelpers_ClassLoader_nativeJNIPreloadClass(JNIEnv * env, jobject, jstring classname);
 
 /*! This function does the actual pre-loading of a Java class. It can be called either from Java
 	via ClassLoader.callJNIPreloadClass() or from C++ main() thread as QAndroidQPAPluginGap.preloadJavaClass(). */
