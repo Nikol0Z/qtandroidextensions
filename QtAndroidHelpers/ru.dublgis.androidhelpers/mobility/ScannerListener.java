@@ -50,8 +50,7 @@ public class ScannerListener extends BroadcastReceiver
 {
     final private static String LOG_TAG = "Grym/ScannerListener";
     final private static boolean verbose_ = false;
-    //private static long native_ptr_ = 0;
-    private volatile long native_ptr_ = 0;
+    private static long native_ptr_ = 0;
     private boolean started_ = false;
 
 	private static ScanManager iScanner;
