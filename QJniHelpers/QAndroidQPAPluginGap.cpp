@@ -109,8 +109,6 @@ jobject JNICALL getActivity(JNIEnv *, jobject)
 	static QMutex s_mutex;
 	QMutexLocker locker(&s_mutex);
 
-	QScopedPointer<QJniObject> activity(theclass.callStaticObject(c_activity_getter_method_name, c_activity_getter_result_name));
-	QScopedPointer<QJniObject> service(theclass.callStaticObject(c_service_getter_method_name, c_service_getter_result_name));
 
 	if (!s_activity)
 	{
@@ -119,6 +117,8 @@ jobject JNICALL getActivity(JNIEnv *, jobject)
 		{
 			throw QAndroidSpecificJniException("QAndroid: Activity retriever class could not be accessed.");
 		}
+		QScopedPointer<QJniObject> activity(theclass.callStaticObject(c_activity_getter_method_name, c_activity_getter_result_name));
+		QScopedPointer<QJniObject> service(theclass.callStaticObject(c_service_getter_method_name, c_service_getter_result_name));
 
         if (!activity)
         {
@@ -131,12 +131,13 @@ jobject JNICALL getActivity(JNIEnv *, jobject)
         {
             throw QAndroidSpecificJniException("QAndroid: Java instance of the Activity is 0.");
         }
-    }
-    if (activity)
-	    return QJniEnvPtr().env()->NewLocalRef(activity->jObject());
+    	if (activity)
+	    	return QJniEnvPtr().env()->NewLocalRef(activity->jObject());
 
-    if (service)
-	    return QJniEnvPtr().env()->NewLocalRef(service->jObject());
+ 	    if (service)
+		    return QJniEnvPtr().env()->NewLocalRef(service->jObject());
+    }
+    return QJniEnvPtr().env()->NewLocalRef(s_activity->jObject());
 }
 
 
