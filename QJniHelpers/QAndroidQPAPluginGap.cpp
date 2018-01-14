@@ -110,7 +110,7 @@ jobject JNICALL getActivity(JNIEnv *, jobject)
 	QMutexLocker locker(&s_mutex);
 
 	QScopedPointer<QJniObject> activity(theclass.callStaticObject(c_activity_getter_method_name, c_activity_getter_result_name));
-    QScopedPointer<QJniObject> service(theclass.callStaticObject(c_service_getter_method_name, c_service_getter_result_name));
+	QScopedPointer<QJniObject> service(theclass.callStaticObject(c_service_getter_method_name, c_service_getter_result_name));
 
 	if (!s_activity)
 	{
