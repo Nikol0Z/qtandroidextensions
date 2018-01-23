@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -576,6 +577,7 @@ public class DesktopUtils
                 int resource = DrawableResourceId(ctx, "icon");
                 m_builder.setSmallIcon(resource);
                 m_builder.setAutoCancel(true);
+                m_builder.setDefaults(Notification.DEFAULT_ALL);
                 Log.i(TAG, "Show Notify2: "+text);
  
                 if (apppack != ""){
