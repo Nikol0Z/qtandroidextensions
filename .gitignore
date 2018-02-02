@@ -1,0 +1,15 @@
+qrc_*
+*.moc
+moc_*
+*.o
+*.so
+*.user
+*.user.*
+bin/*
+gen/*
+Makefile
+build.xml
+local.properties
+project.properties
+proguard-project.txt
+*.orig
