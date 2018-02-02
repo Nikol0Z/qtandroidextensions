@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -71,6 +72,8 @@ import java.io.IOException;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.support.v4.app.NotificationCompat;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -81,7 +84,7 @@ public class DesktopUtils
     private static final String TAG = "Grym/DesktopServices";
     private static final boolean verbose = false;
     private static NotificationManager m_notificationManager;
-    private static Notification.Builder m_builder;
+    private static NotificationCompat.Builder m_builder;
 
     // Returns:
     // -1 - error
@@ -572,7 +575,7 @@ public class DesktopUtils
             Log.i(TAG, "Show Notify: "+text);
             if (m_notificationManager == null) {
                 m_notificationManager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-                m_builder = new Notification.Builder(ctx);
+                m_builder = new NotificationCompat.Builder(ctx);
                 int resource = DrawableResourceId(ctx, "icon");
                 m_builder.setSmallIcon(resource);
                 m_builder.setAutoCancel(true);
@@ -600,8 +603,13 @@ public class DesktopUtils
             }
             m_builder.setContentTitle(title);
             m_builder.setContentText(text);
-            m_notificationManager.notify(1, m_builder.build());
-
+	    Notification notification =m_builder.build();
+	    notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
+            notification.ledARGB = Color.GREEN;
+            notification.ledOffMS = 700;
+            notification.ledOnMS = 1000;
+            notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
+	    m_notificationManager.notify(1,notification);
             return;
         }
         catch(Exception e)
