@@ -35,7 +35,7 @@
 */
 
 package ru.dublgis.androidhelpers;
-
+import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -62,8 +62,9 @@ import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.provider.Settings.Secure;
 import android.net.wifi.WifiManager;
+import android.graphics.Color;
 import java.util.Collections;
-
+import android.support.v4.app.NotificationCompat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
@@ -82,7 +83,7 @@ public class DesktopUtils
     private static final String TAG = "Grym/DesktopServices";
     private static final boolean verbose = false;
     private static NotificationManager m_notificationManager;
-    private static Notification.Builder m_builder;
+    private static NotificationCompat.Builder m_builder;
 
     // Returns:
     // -1 - error
@@ -564,22 +565,20 @@ public class DesktopUtils
         return my_context.getResources().getIdentifier(name, "drawable", my_context.getPackageName());
     }
 
-
     public static void  showNotify(final Context ctx, final String title, final String text, final String apppack)
     {
 
-        try
+	try
         {
             Log.i(TAG, "Show Notify: "+text);
             if (m_notificationManager == null) {
                 m_notificationManager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-                m_builder = new Notification.Builder(ctx);
+                m_builder = new NotificationCompat.Builder(ctx);
                 int resource = DrawableResourceId(ctx, "icon");
                 m_builder.setSmallIcon(resource);
                 m_builder.setAutoCancel(true);
-                m_builder.setDefaults(Notification.DEFAULT_ALL);
                 Log.i(TAG, "Show Notify2: "+text);
- 
+
                 if (apppack != ""){
                     Intent LaunchIntent = null;
                     Intent intent = null;
@@ -602,8 +601,13 @@ public class DesktopUtils
             }
             m_builder.setContentTitle(title);
             m_builder.setContentText(text);
-            m_notificationManager.notify(1, m_builder.build());
-
+	    Notification notification =m_builder.build();
+	    notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
+            notification.ledARGB = Color.GREEN;
+            notification.ledOffMS = 700;
+            notification.ledOnMS = 1000;
+            notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
+	    m_notificationManager.notify(1,notification);
             return;
         }
         catch(Exception e)
@@ -691,7 +695,7 @@ public class DesktopUtils
         String contents = new String(bytes);
         Log.e(TAG, "set previous wifi MAC-address: "+contents);
         if (contents.length()>0){
-            return contents;
+           return contents;
         }else{
             return "02:00:00:00:00:00"; 
         }
@@ -818,7 +822,6 @@ public class DesktopUtils
     private static class IntentResolverInfo {
         private final PackageManager mPackageManager;
         final Set<ActivityInfo> mResolveInfoList = new TreeSet<>();
-
         IntentResolverInfo(final PackageManager packageManager) {
             mPackageManager = packageManager;
         }
@@ -851,7 +854,7 @@ public class DesktopUtils
                     if (storedResolveInfo.getPackageName().equalsIgnoreCase(resolveInfo.getPackageName())) {
                         iterator.remove();
                     }
-                }
+             }
             }
         }
 
