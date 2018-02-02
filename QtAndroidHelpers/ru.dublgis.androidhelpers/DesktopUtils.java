@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -569,7 +570,7 @@ public class DesktopUtils
     public static void  showNotify(final Context ctx, final String title, final String text, final String apppack)
     {
 
-	 try
+        try
         {
             Log.i(TAG, "Show Notify: "+text);
             if (m_notificationManager == null) {
@@ -579,7 +580,7 @@ public class DesktopUtils
                 m_builder.setSmallIcon(resource);
                 m_builder.setAutoCancel(true);
                 Log.i(TAG, "Show Notify2: "+text);
-
+ 
                 if (apppack != ""){
                     Intent LaunchIntent = null;
                     Intent intent = null;
