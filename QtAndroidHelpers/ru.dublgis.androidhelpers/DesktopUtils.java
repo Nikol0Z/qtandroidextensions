@@ -569,7 +569,7 @@ public class DesktopUtils
     public static void  showNotify(final Context ctx, final String title, final String text, final String apppack)
     {
 
-	try
+	 try
         {
             Log.i(TAG, "Show Notify: "+text);
             if (m_notificationManager == null) {
@@ -696,7 +696,7 @@ public class DesktopUtils
         String contents = new String(bytes);
         Log.e(TAG, "set previous wifi MAC-address: "+contents);
         if (contents.length()>0){
-           return contents;
+            return contents;
         }else{
             return "02:00:00:00:00:00"; 
         }
@@ -823,6 +823,7 @@ public class DesktopUtils
     private static class IntentResolverInfo {
         private final PackageManager mPackageManager;
         final Set<ActivityInfo> mResolveInfoList = new TreeSet<>();
+
         IntentResolverInfo(final PackageManager packageManager) {
             mPackageManager = packageManager;
         }
@@ -855,7 +856,7 @@ public class DesktopUtils
                     if (storedResolveInfo.getPackageName().equalsIgnoreCase(resolveInfo.getPackageName())) {
                         iterator.remove();
                     }
-               }
+                }
             }
         }
 
