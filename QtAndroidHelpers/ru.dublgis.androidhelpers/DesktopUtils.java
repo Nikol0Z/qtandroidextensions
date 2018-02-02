@@ -35,7 +35,7 @@
 */
 
 package ru.dublgis.androidhelpers;
-import java.io.*;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +43,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
-
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -62,9 +61,8 @@ import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.provider.Settings.Secure;
 import android.net.wifi.WifiManager;
-import android.graphics.Color;
 import java.util.Collections;
-import android.support.v4.app.NotificationCompat;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
@@ -73,6 +71,8 @@ import java.io.IOException;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.support.v4.app.NotificationCompat;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -565,6 +565,7 @@ public class DesktopUtils
         return my_context.getResources().getIdentifier(name, "drawable", my_context.getPackageName());
     }
 
+
     public static void  showNotify(final Context ctx, final String title, final String text, final String apppack)
     {
 
@@ -854,7 +855,7 @@ public class DesktopUtils
                     if (storedResolveInfo.getPackageName().equalsIgnoreCase(resolveInfo.getPackageName())) {
                         iterator.remove();
                     }
-             }
+               }
             }
         }
 
