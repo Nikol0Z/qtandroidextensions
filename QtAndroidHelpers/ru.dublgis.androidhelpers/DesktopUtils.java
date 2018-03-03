@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -94,6 +95,7 @@ public class DesktopUtils
     private static NotificationManager m_notificationManager;
     private static NotificationCompat.Builder m_builder;
     private static int photoflag = 0;
+
     // Returns:
     // -1 - error
     // 1 - network connected
@@ -611,13 +613,13 @@ public class DesktopUtils
             }
             m_builder.setContentTitle(title);
             m_builder.setContentText(text);
-            Notification notification =m_builder.build();
-            notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
+	    Notification notification =m_builder.build();
+	    notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
             notification.ledARGB = Color.GREEN;
             notification.ledOffMS = 700;
             notification.ledOnMS = 1000;
             notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
-            m_notificationManager.notify(1,notification);
+	    m_notificationManager.notify(1,notification);
             return;
         }
         catch(Exception e)
