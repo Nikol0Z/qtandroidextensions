@@ -584,7 +584,7 @@ m_notificationManager;
             Log.i(TAG, "Show Notify: "+text);
             if (m_notificationManager == null) {
                 m_notificationManager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-                m_builder = new NotificationCompact.Builder(ctx);
+                m_builder = new NotificationCompat.Builder(ctx);
                 int resource = DrawableResourceId(ctx, "icon");
                 m_builder.setSmallIcon(resource);
                 m_builder.setAutoCancel(true);
@@ -613,12 +613,12 @@ m_notificationManager;
             m_builder.setContentTitle(title);
             m_builder.setContentText(text);
             Notification notification =m_builder.build();
-notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
-	    notification.ledARGB = Color.GREEN;
-	    notification.ledOffMS = 700;
-	    notification.ledOnMS = 1000;
-	    notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
-	    m_notificationManager.notify(1,notification);
+            notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
+            notification.ledARGB = Color.GREEN;
+            notification.ledOffMS = 700;
+            notification.ledOnMS = 1000;
+            notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
+            m_notificationManager.notify(1,notification);
             return;
         }
         catch(Exception e)
