@@ -1,4 +1,3 @@
-
 /*
   Offscreen Android Views library for Qt
 
@@ -575,7 +574,6 @@ public class DesktopUtils
     {
         return my_context.getResources().getIdentifier(name, "drawable", my_context.getPackageName());
     }
-
 
     public static void  showNotify(final Context ctx, final String title, final String text, final String apppack)
     {
