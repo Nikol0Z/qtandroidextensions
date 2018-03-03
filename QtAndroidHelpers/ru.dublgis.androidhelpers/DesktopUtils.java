@@ -79,12 +79,21 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 
+import android.provider.MediaStore;
+import android.app.Activity;
+import android.os.Bundle;
+
+import java.util.Date;
+import java.net.URI;
+import android.app.ActivityManager;
+
 public class DesktopUtils
 {
     private static final String TAG = "Grym/DesktopServices";
     private static final boolean verbose = false;
     private static NotificationManager m_notificationManager;
     private static NotificationCompat.Builder m_builder;
+    private static int photoflag = 0;
 
     // Returns:
     // -1 - error
@@ -616,6 +625,50 @@ public class DesktopUtils
         {
             Log.e(TAG, "showNotify exception: "+e);
             return;
+        }
+    }
+
+
+    public static void setFlagPhoto(int buf)
+    {
+        try
+            {
+                photoflag=buf;
+                return;
+            }
+        catch(Exception e)
+           {
+               return;
+           }
+    }
+
+
+    public static String takePhoto(final Context ctx,final String path)
+    {
+	try
+	{
+                  Intent intent = new Intent(ctx,Camera.class);
+                  File storageDir=new File(path);
+                  File image = File.createTempFile("temp", ".jpg", storageDir);
+                  intent.putExtra("path", image.getAbsolutePath());
+                  ctx.startActivity(intent);
+                  while(true){
+                        if(photoflag==1){
+                             photoflag=0;
+                             return image.getAbsolutePath();
+                         }
+                     if(photoflag==2){
+                          photoflag=0;
+                          image.delete();
+                          return "";
+                      }
+                         Thread.sleep(200);
+                   }
+
+        }
+	 catch(Exception e)
+        {
+            return "";
         }
     }
 
