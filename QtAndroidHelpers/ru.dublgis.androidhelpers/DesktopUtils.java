@@ -91,8 +91,7 @@ public class DesktopUtils
 {
     private static final String TAG = "Grym/DesktopServices";
     private static final boolean verbose = false;
-    private static NotificationManager 
-m_notificationManager;
+    private static NotificationManager m_notificationManager;
     private static NotificationCompat.Builder m_builder;
     private static int photoflag = 0;
     // Returns:
