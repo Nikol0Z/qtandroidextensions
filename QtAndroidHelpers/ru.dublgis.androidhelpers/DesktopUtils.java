@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -72,20 +71,28 @@ import java.io.IOException;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.support.v4.app.NotificationCompat;
 
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+
+
+//----
+import android.provider.MediaStore;
+import android.app.Activity;
+import android.os.Bundle;
+
+import java.util.Date;
+import java.net.URI;
+import android.app.ActivityManager;
 
 public class DesktopUtils
 {
     private static final String TAG = "Grym/DesktopServices";
     private static final boolean verbose = false;
     private static NotificationManager m_notificationManager;
-    private static NotificationCompat.Builder m_builder;
-
+    private static Notification.Builder m_builder;
+    private static int photoflag = 0;
     // Returns:
     // -1 - error
     // 1 - network connected
@@ -575,7 +582,7 @@ public class DesktopUtils
             Log.i(TAG, "Show Notify: "+text);
             if (m_notificationManager == null) {
                 m_notificationManager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-                m_builder = new NotificationCompat.Builder(ctx);
+                m_builder = new Notification.Builder(ctx);
                 int resource = DrawableResourceId(ctx, "icon");
                 m_builder.setSmallIcon(resource);
                 m_builder.setAutoCancel(true);
@@ -603,19 +610,58 @@ public class DesktopUtils
             }
             m_builder.setContentTitle(title);
             m_builder.setContentText(text);
-	    Notification notification =m_builder.build();
-	    notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
-            notification.ledARGB = Color.GREEN;
-            notification.ledOffMS = 700;
-            notification.ledOnMS = 1000;
-            notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
-	    m_notificationManager.notify(1,notification);
+            m_notificationManager.notify(1, m_builder.build());
+
             return;
         }
         catch(Exception e)
         {
             Log.e(TAG, "showNotify exception: "+e);
             return;
+        }
+    }
+
+
+    public static void setFlagPhoto(int buf)
+    {
+        try
+            {
+                photoflag=buf;
+                return;
+            }
+        catch(Exception e)
+           {
+               return;
+           }
+    }
+
+
+    public static String takePhoto(final Context ctx,final String path)
+    {
+	try
+	{
+                  Intent intent = new Intent(ctx,Camera.class);
+                  File storageDir=new File(path);
+                  File image = File.createTempFile("temp", ".jpg", storageDir);
+                  intent.putExtra("path", image.getAbsolutePath());
+                  ctx.startActivity(intent);
+                  while(true){
+                        if(photoflag==1){
+                             photoflag=0;
+                             return image.getAbsolutePath();
+                         }
+                     if(photoflag==2){
+                          photoflag=0;
+                          image.delete();
+                          return "";
+                      }
+                         Thread.sleep(200);
+                   }
+
+        }
+	 catch(Exception e)
+        {
+            return "";
         }
     }
 

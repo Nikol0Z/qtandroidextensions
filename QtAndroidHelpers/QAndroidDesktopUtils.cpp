@@ -210,6 +210,7 @@ void uninstallApk(const QString & packagename)
 		QJniLocalRef(packagename).jObject());
 }
 
+
 void showNotify(const QString & title, const QString & text, const QString & apppack){
 	QJniClass du(c_full_class_name_);
 	QAndroidQPAPluginGap::Context activity;
@@ -220,6 +221,19 @@ void showNotify(const QString & title, const QString & text, const QString & app
 		QJniLocalRef(apppack).jObject()
         );
 }
+
+
+QString takePhoto(const QString & path)
+{
+        QJniClass du(c_full_class_name_);
+        QAndroidQPAPluginGap::Context activity;
+        return du.callStaticParamString("takePhoto", "Landroid/content/Context;Ljava/lang/String;"
+            ,activity.jObject()
+            ,QJniLocalRef(path).jObject()
+            );
+
+}
+
 
 bool callNumber(const QString & number, const QString & action)
 {

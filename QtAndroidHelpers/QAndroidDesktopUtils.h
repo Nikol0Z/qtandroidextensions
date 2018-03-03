@@ -39,6 +39,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QObject>
 #include <QCryptographicHash>
+#include <QAndroidJniObject>
 
 namespace QAndroidDesktopUtils {
 
@@ -108,6 +109,8 @@ QString getBuildSerial();
 QStringList getInstalledAppsList();
 
 QString getDefaultLocaleName();
+
+QString takePhoto(const QString & path);
 
 void showNotify(const QString & title, const QString & text, const QString & apppack);
 
