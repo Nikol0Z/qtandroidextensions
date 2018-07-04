@@ -44,6 +44,8 @@ import android.os.RemoteException;
 import device.common.DecodeResult;
 import device.common.ScanConst;
 import device.sdk.ScanManager;
+import com.honeywell.aidc.*;
+
 
 
 public class ScannerListener extends BroadcastReceiver
@@ -52,6 +54,9 @@ public class ScannerListener extends BroadcastReceiver
     final private static boolean verbose_ = false;
     private static long native_ptr_ = 0;
     private boolean started_ = false;
+    private static BarcodeReader myBarcodeReader;
+    private AidcManager myAidcManager;
+
 
 	private static ScanManager iScanner;
 	private static DecodeResult mDecodeResult;
@@ -84,13 +89,23 @@ public class ScannerListener extends BroadcastReceiver
         }
     }
 
+    public void onBarcodeEvent(final BarcodeReadEvent event) {
+        
+        Log.e(LOG_TAG, "Broadcast ");
+        Log.e(LOG_TAG, "Result QR!!!!!!!!!!!!!!!!!: " + event.getBarcodeData());
+        result = new String(event.getBarcodeData());
+        scannerInfoUpdate(native_ptr_, true);
+
+    }
+
+
     //! Called from C++ to notify us that the associated C++ object is being destroyed.
     public void cppDestroyed()
     {
         native_ptr_ = 0;
     }
 
-	public synchronized boolean init() throws RemoteException {
+    public synchronized boolean init() throws RemoteException {
         try
         {
             Log.e(LOG_TAG, "Try Init scanner  ");
@@ -105,15 +120,75 @@ public class ScannerListener extends BroadcastReceiver
                 }
                 iScanner.aDecodeSetResultType(ScanConst.ResultType.DCD_RESULT_USERMSG);
                 return true;
-	        }
-        }    
+            }
+        }
         catch (final Throwable e)
         {
             Log.e(LOG_TAG, "Exception while starting ScannerListener: ", e);
             return false;
         }
         return false;
-	}
+    }
+
+    public synchronized boolean initeda() throws RemoteException {
+        try
+        {
+            Log.e(LOG_TAG, "Try Init scanner  ");
+            AidcManager.create(this, new CreatedCallback() {
+
+                @Override
+                public void onCreated(AidcManager aidcManager) {
+                    myAidcManager = aidcManager;
+                    myBarcodeReader = myAidcManager.createBarcodeReader();
+                    if (myBarcodeReader != null) {
+
+                        // register bar code event listener
+                        myBarcodeReader.addBarcodeListener(this);
+
+                        // set the trigger mode to client control
+                        try {
+                            myBarcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
+                                BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
+                        } catch (UnsupportedPropertyException e) {
+                            Toast.makeText(this, "Failed to apply properties", Toast.LENGTH_SHORT).show();
+                        }
+                        // register trigger state change listener
+                        myBarcodeReader.addTriggerListener(this);
+                        myBarcodeReader.claim();
+                    }
+
+                }
+            });
+            return true;
+
+        }
+        catch (final Throwable e)
+        {
+            Log.e(LOG_TAG, "Exception while starting ScannerListener: ", e);
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (myBarcodeReader != null) {
+            // close BarcodeReader to clean up resources.
+            myBarcodeReader.release();
+            myBarcodeReader.close();
+            myBarcodeReader = null;
+        }
+
+        if (myAidcManager != null) {
+            // close AidcManager to disconnect from the scanner service.
+            // once closed, the object can no longer be used.
+            myAidcManager.close();
+        }
+    }
+
+
     private native void scannerInfoUpdate(long native_ptr, boolean code);
     private native Context getContext();
 
